@@ -1,4 +1,24 @@
-#carouselCont{
+body {
+}
+
+.loginContainer {
+    background-color: #3c3d41;
+    margin-top: 20px;
+    border-radius: 20px;
+    padding-top:10px;
+    padding-bottom: 10px;
+}
+
+.loginFont {
+    color: #ffffff;
+}
+
+.navbarStyle {
+    background-color: #3c3d41 !important;
+    border-color: #3c3d41 !important;
+}
+
+#carouselCont {
     padding-top: 11px;
     padding-bottom: 20px;
 }
@@ -7,10 +27,8 @@
     background-color: #3c3d41;
     color: white;
     padding-top: 30px;
-    
-position: absolute;
-  bottom: 0;
-      width: 100%;
+    bottom: 0;
+    width: 100%;
 }
 
 
@@ -25,10 +43,11 @@ position: absolute;
 
 
 
-#myFooter h2 a{
+#myFooter h2 a {
     font-size: 50px;
     text-align: center;
     color: #fff;
+
 }
 
 #myFooter a {
@@ -57,6 +76,7 @@ position: absolute;
 
 #myFooter .social-networks a:hover {
     text-decoration: none;
+
 }
 
 #myFooter .facebook:hover {
@@ -65,12 +85,13 @@ position: absolute;
 
 #myFooter .google:hover {
     color: #ef1a1a;
+
 }
 
 #myFooter .twitter:hover {
     color: #00aced;
 }
-    
+
 #myFooter .btn {
     color: white;
     background-color: #d84b6b;
@@ -81,37 +102,4 @@ position: absolute;
     margin: 0 auto;
     margin-top: 10px;
     line-height: 25px;
-}
-
-@media screen and (max-width: 767px) {
-    #myFooter {
-        text-align: center;
-    }
-}
-
-
-/* CSS used for positioning the footers at the bottom of the page. */
-/* You can remove this. */
-
-html{
-    height: 100%;
-}
-
-body{
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: column;
-    -webkit-flex-direction: column;
-    height: 100%;
-}
-
-.content{
-   flex: 1 0 auto;
-   -webkit-flex: 1 0 auto;
-   min-height: 200px;
-}
-
-#myFooter{
-   flex: 0 0 auto;
-   -webkit-flex: 0 0 auto;
 }
