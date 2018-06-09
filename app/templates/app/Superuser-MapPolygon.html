@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Admin - Map</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    #map {
+      height: 100vw;
+      width: 100vw;
+      max-width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Simple City Tours</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Admin</a></li>
+          <li><a href="#">Shop</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <h1>Create City Map</h1>
+  <div>
+    <div id="map"></div>
+  </div>
+
+  <div class="container">
+    <form>
+      <div class="form-group">
+        <label for="citynameInput">City's Name</label>
+        <input type="text" class="form-control" id="citynameInput" aria-describedby="emailHelp" placeholder="Enter City's Name">
+      </div>
+      <div class="form-group">
+        <label for="descriptionInput">Description</label>
+        <input type="text" class="form-control" id="descriptionInput" aria-describedby="emailHelp" placeholder="Enter Description">
+        <small class="form-text text-muted">Short Description of the City</small>
+      </div>
+      <div class="pull-right">
+        <button type="button" class="btn btn-primary" onclick="createMap()">Create Map</button>
+        <button type="button" class="btn btn-danger" onClick="window.location.reload()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+
+    var map;
+    var newPolygons = [];
+    var infoWindow;
+
+    //Create Map Function on Button Click
+    function createMap() {
+      city = document.getElementById('citynameInput').value;
+      description = document.getElementById('descriptionInput').value;
+
+      //Map Options
+      var newOptions = {
+        zoom: map.zoom,
+        center: map.center
+      }
+
+      //Overwrite Existing map
+      map = new google.maps.Map(document.getElementById('map'), newOptions);
+
+      //Add Polygons
+      var polygon = new google.maps.Polygon(newPolygons);
+      polygon.setMap(map);
+
+      //Show Name and Description on Click
+      polygon.addListener('click', function(event) {
+        console.log(description);
+        infoWindow = new google.maps.InfoWindow;
+        infoWindow.setContent("<b>" + city + "</b><br />" + description);
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+      });
+    }
+
+
+    //Initial Map
+    function initMap() {
+
+      //map options
+      var defaultOptions = {
+        zoom: 3,
+        center: {
+          lat: 49.246292,
+          lng: -123.116226
+        }
+      }
+
+      //create map
+      map = new google.maps.Map(document.getElementById('map'), defaultOptions);
+
+      //polygon defaults
+      poly = new google.maps.Polyline({
+        strokeColor: '#cccc00',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        fillColor: 'yellow',
+        fillOpacity: 0.05
+      });
+      poly.setMap(map);
+
+
+      // Listen from click on map
+      google.maps.event.addListener(map, 'click',
+        function(event) {
+          debugger
+          var path = poly.getPath();
+
+          //creates polygon once 5 points are chosen
+          if (path.length == 4) {
+            var polygonOptions = {
+              path: path,
+              strokeColor: "#cccc00",
+              fillColor: "yellow",
+              editable: true
+
+            };
+            var polygon = new google.maps.Polygon(polygonOptions);
+            polygon.setMap(map);
+            newPolygons = polygonOptions;
+          }
+
+          path.push(event.latLng);
+
+
+
+
+        });
+
+
+      /*
+              Basics of Google Maps API
+              //add marker
+              var marker = new google.maps.Marker({
+                position:{lat: 49.246292, lng: -123.116226},
+                map:map,
+                icon:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+              });
+
+              //Displays info on marker
+              var infoWindow = new google.maps.InfoWindow({
+                content: '<h1>Vancouver BC</h1>'
+              });
+
+              //Calls infowindow variable to display content
+              marker.addListener('click', function(){
+                infoWindow.open(map,marker);
+              });
+
+
+      var markers = [{
+          coords: {
+            lat: 49.246292,
+            lng: -123.116226
+          },
+          iconImage: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+          description: "<h1>Vancouver</h1>"
+        },
+        {
+          coords: {
+            lat: 49.1967,
+            lng: -123.1815
+          },
+          description: "<h1>Vancouver - Airport</h1>"
+        }
+      ];
+
+      // //Looks through markers array and adds markers to map
+      // for(var i = 0; i < markers.length; i++){
+      //   addMarker(markers[i]);
+      // }
+      //
+      // //Add Marker Function
+      // function addMarker(props){
+      //   var marker = new google.maps.Marker({
+      //     position:props.coords,
+      //     map:map,
+      //   });
+      //
+      //   if(props.iconImage){
+      //     marker.setIcon(props.iconImage);
+      //   }
+      //
+      //   if(props.description){
+      //     var infoWindow = new google.maps.InfoWindow({
+      //       content: props.description
+      //     });
+      //
+      //     marker.addListener('click', function(){
+      //       infoWindow.open(map, marker);
+      //     });
+      //   }
+      // }
+      */
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCROEB3riRr0oF3XNPfS-o3iL7MOEck90I&callback=initMap" async defer></script>
+</body>
+
+</html>
