@@ -1,18 +1,32 @@
 {% if user.is_authenticated %}
-<ul class="nav navbar-nav">
-    <li><a href="{% url 'locations' %}">Locations</a></li>
-    <li><a href="/admin">Admin Users</a></li>
-    <li><a href="{% url 'home' %}">Payment Info</a></li>
-</ul>
-<form id="logoutForm" action="/logout" method="post" class="navbar-right">
-    {% csrf_token %}
-    <ul class="nav navbar-nav navbar-right">
-        <li><span class="navbar-brand">Hello {{ user.username }}!</span></li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    {% if user.is_superuser %}
+    <ul class="nav navbar-nav">
+        <li><a href="{% url 'locations' %}">Locations</a></li>
+        <li><a href="/admin">Admin Users</a></li>
+        <li><a href="{% url 'map' %}">map</a></li>
     </ul>
+    <form id="logoutForm" action="/logout" method="post" class="navbar-right">
+        {% csrf_token %}
+        <ul class="nav navbar-nav navbar-right">
+            <li><span class="navbar-brand">Hello {{ user.username }}!</span></li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
 
-</form>
+    </form>
+    {% else %}
+    <ul class="nav navbar-nav">
+        <li><a href="cityUpdate/{{cityid}}">{{city}}</a></li>
+        <li><a href="{% url 'home' %}">Payment Info</a></li>
+    </ul>
+    <form id="logoutForm" action="/logout" method="post" class="navbar-right">
+        {% csrf_token %}
+        <ul class="nav navbar-nav navbar-right">
+            <li><span class="navbar-brand">Hello {{ user.username }}!</span></li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
 
+    </form>
+    {% endif %}
 {% else %}
 
 <ul class="nav navbar-nav navbar-right">

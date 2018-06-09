@@ -18,6 +18,9 @@ urlpatterns = [
     # Examples:
     url(r'^$', app.views.home, name='home'),
     url(r'^locations$', app.views.locations, name='locations'),
+    url(r'^map$', app.views.map, name='map'),
+    url(r'^city/(?P<pk>[0-9]+)/$', app.views.DetailView.as_view(), name='city'),
+    url(r'^cityUpdate/(?P<pk>[0-9]+)/$', app.views.cityUpdate.as_view(), name='cityUpdate'),
     url(r'^about', app.views.about, name='about'),
     url(r'^login/$',
         django.contrib.auth.views.login,

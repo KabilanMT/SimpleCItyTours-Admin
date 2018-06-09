@@ -103,3 +103,53 @@ body {
     margin-top: 10px;
     line-height: 25px;
 }
+
+.CityPic {
+    border-radius: 10%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.cityDiv {
+    margin-bottom: 30px;
+}
+
+.cityText {
+    background-color: whitesmoke;
+    padding: 2%;
+    border-radius: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    font-family: "Courier New", Courier, monospace
+}
+
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.editBut {
+    background-color: #3379b8;
+    font-size: 20px;
+    margin-bottom: 5px;
+    border-radius: 10%;
+    padding: 3%;
+}
+
+.cityDiv:hover .CityPic {
+    background-color: #FFD000;
+    opacity: 0.6;
+    filter: alpha(opacity=60); /* msie */
+}
+
+.cityDiv:hover .middle {
+    opacity: 1;
+}
+
+ul li {
+    display: inline;
+}

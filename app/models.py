@@ -5,6 +5,7 @@ Definition of models.
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 
 
@@ -60,6 +61,8 @@ class Location(models.Model):
     img = models.CharField(max_length=255,default="/not_set")
     def __str__(self):
         return self.name
+    def get_absolute_url(self):
+        return reverse('home')
 
 
 #This class describes the type of the location point on the map
