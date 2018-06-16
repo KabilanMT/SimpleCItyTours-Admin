@@ -43,7 +43,7 @@
     </div>
   </nav>
 
-  <h1>Create City Map</h1>
+  <h2>Create City Map</h2>
   <div>
     <div id="map"></div>
   </div>
@@ -52,25 +52,29 @@
     <form>
       <div class="form-group">
         <label for="citynameInput">City's Name</label>
-        <input type="text" class="form-control" id="citynameInput" aria-describedby="emailHelp" placeholder="Enter City's Name">
+        <input type="text" class="form-control" id="citynameInput" aria-describedby="emailHelp" placeholder="Enter City's Name" disabled>
       </div>
       <div class="form-group">
         <label for="descriptionInput">Description</label>
-        <input type="text" class="form-control" id="descriptionInput" aria-describedby="emailHelp" placeholder="Enter Description">
+        <input type="text" class="form-control" id="descriptionInput" aria-describedby="emailHelp" placeholder="Enter Description" disabled>
         <small class="form-text text-muted">Short Description of the City</small>
       </div>
       <div class="pull-right">
-        <button type="button" class="btn btn-primary" onclick="createMap()">Create Map</button>
+        <button type="button" class="btn btn-success" onclick="createMap()">Create Map</button>
         <button type="button" class="btn btn-danger" onClick="window.location.reload()">Cancel</button>
       </div>
     </form>
   </div>
 
   <script>
-
     var map;
     var newPolygons = [];
     var infoWindow;
+
+
+    var listvalues = localStorage.getItem('lists');
+    //parse the value
+    var finalvalue = JSON.parse(listvalues);
 
     //Create Map Function on Button Click
     function createMap() {
@@ -90,26 +94,92 @@
       var polygon = new google.maps.Polygon(newPolygons);
       polygon.setMap(map);
 
+      //coordinates of the polygon
+      var coordinates = polygon.getPath().getArray();
+      console.log(coordinates);
+
       //Show Name and Description on Click
       polygon.addListener('click', function(event) {
-        console.log(description);
         infoWindow = new google.maps.InfoWindow;
         infoWindow.setContent("<b>" + city + "</b><br />" + description);
         infoWindow.setPosition(event.latLng);
         infoWindow.open(map);
       });
+
+      localStorage.setItem('mapPolygon', JSON.stringify(coordinates));
+      localStorage.setItem('mapOptions', JSON.stringify(newOptions));
+
+      if (confirm("Saved!")){
+        window.history.back();
+        }
     }
 
 
     //Initial Map
     function initMap() {
 
+      if(localStorage["mapPolygon"] && localStorage["mapOptions"]){
+        city = finalvalue.name;
+        description = finalvalue.description;
+
+        console.log(city);
+        console.log(description);
+
+        console.log("It exists!");
+        newOptions = JSON.parse(localStorage["mapOptions"]);
+        coords = JSON.parse(localStorage["mapPolygon"]);
+
+        console.log(coords);
+        //create map
+         map = new google.maps.Map(document.getElementById('map'), newOptions);
+         var polygonOptions = {
+           paths: coords,
+           strokeColor: '#cccc00',
+           strokeOpacity: 1.0,
+           strokeWeight: 3,
+           fillColor: 'yellow',
+           fillOpacity: 0.05,
+         }
+        var polygon = new google.maps.Polygon(polygonOptions);
+        polygon.setMap(map);
+            var path = polygon.getPath();
+        // Listen from click on map
+        google.maps.event.addListener(polygon, 'click', function (event) {
+            debugger
+            console.log("CLICKED");
+
+            var polygonOptions = {
+              path: path,
+              strokeColor: "#cccc00",
+              fillColor: "yellow",
+              editable: true
+            };
+            var polygon = new google.maps.Polygon(polygonOptions);
+            polygon.setMap(map);
+            newPolygons = polygonOptions;
+          });
+
+
+        newPolygons = polygonOptions;
+
+        //Show Name and Description on Click
+        polygon.addListener('click', function(event) {
+          infoWindow = new google.maps.InfoWindow;
+          infoWindow.setContent("<b>" + city + "</b><br />" + description);
+          infoWindow.setPosition(event.latLng);
+          infoWindow.open(map);
+        });
+      }
+
+      else{
+
+      console.log("Doesn't Exist");
       //map options
       var defaultOptions = {
         zoom: 3,
         center: {
-          lat: 49.246292,
-          lng: -123.116226
+          lat: 0,
+          lng: 0
         }
       }
 
@@ -140,18 +210,12 @@
               strokeColor: "#cccc00",
               fillColor: "yellow",
               editable: true
-
             };
             var polygon = new google.maps.Polygon(polygonOptions);
             polygon.setMap(map);
             newPolygons = polygonOptions;
           }
-
           path.push(event.latLng);
-
-
-
-
         });
 
 
@@ -219,7 +283,15 @@
       //   }
       // }
       */
+      }
+
     }
+    $(function() {
+
+      $("#citynameInput").val(finalvalue.name);
+      $("#descriptionInput").val(finalvalue.description);
+
+    });
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCROEB3riRr0oF3XNPfS-o3iL7MOEck90I&callback=initMap" async defer></script>
 </body>
