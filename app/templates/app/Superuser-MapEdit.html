@@ -151,9 +151,19 @@
           console.log(key, finalvalue[key]);
 
         });
+          $('#name').val(finalvalue["name"]);
+          $('#description').val(finalvalue["description"]);
+          $('#dropdownButton').html(finalvalue["adminUser"] + "<span class=\"caret\"></span>");
+          $('#price').val(finalvalue["price"]);
+          if(finalvalue["visibility"]){
+            	$('#visibility').prop('checked', true).change()
+          }
+          else{
+	            $('#visibility').prop('checked', false).change()
+          }
+
+
       }
-
-
 
 
       //replaces dropdown text dynamically
@@ -165,8 +175,6 @@
       $('.dropdown-inverse li > a').click(function(e) {
         $('.btnStatus').text(this.innerHTML);
       });
-
-
       //Saves value
       $("#save").click(function() {
         alert(
@@ -174,15 +182,14 @@
           "\rDescription: " + $("#description").val() +
           "\rAdmin User: " + $('#dropdownButton').text() +
           "\rPrice: " + $("#price").val() +
-          "\rVisibility: " + $("#visibility").val()
+          "\rVisibility: " + $('#visibility').prop('checked')
         );
         var listvalues = {
           "name": $('#name').val(),
           "description": $("#description").val(),
           "adminUser": $('#dropdownButton').text(),
           "price": $("#price").val(),
-          "visibility": $("#visibility").val(),
-          "mapPoints": ""
+          "visibility": $('#visibility').prop('checked')
         }
         localStorage.setItem('lists', JSON.stringify(listvalues));
       });
@@ -193,8 +200,7 @@
           "description": $("#description").val(),
           "adminUser": $('#dropdownButton').text(),
           "price": $("#price").val(),
-          "visibility": $("#visibility").val(),
-          "mapPoints": ""
+          "visibility": $('#visibility').prop('checked')
         }
         localStorage.setItem('lists', JSON.stringify(listvalues));
         window.location.href = 'Superuser-MapPolygon.html';
