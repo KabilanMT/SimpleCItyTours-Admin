@@ -15,12 +15,14 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = [
-    # Examples:
     url(r'^$', app.views.home, name='home'),
     url(r'^locations$', app.views.locations, name='locations'),
-    url(r'^map$', app.views.map, name='map'),
+    url(r'^map/$', app.views.map, name='map'),
+    url(r'^userCreation$', app.views.userCreation.as_view(), name='userCreation'),
+    url(r'^createCity/$', app.views.createCity, name='createCity'),
     url(r'^city/(?P<pk>[0-9]+)/$', app.views.DetailView.as_view(), name='city'),
     url(r'^cityUpdate/(?P<pk>[0-9]+)/$', app.views.cityUpdate.as_view(), name='cityUpdate'),
+    url(r'^cityUpdateAdmin/(?P<pk>[0-9]+)/$', app.views.cityUpdateAdmin.as_view(), name='cityUpdateAdmin'),
     url(r'^about', app.views.about, name='about'),
     url(r'^login/$',
         django.contrib.auth.views.login,
@@ -40,10 +42,6 @@ urlpatterns = [
             'next_page': '/',
         },
         name='logout'),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
      url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
      url(r'^admin/', include(admin.site.urls)),
 ]

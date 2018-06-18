@@ -1,7 +1,15 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\app",
+    "\\app\\static",
+    "\\app\\static\\app",
+    "\\app\\static\\app\\css",
+    "\\app\\static\\app\\scripts",
+    "\\app\\templates",
+    "\\app\\templates\\app",
+    "\\simplecitytours"
   ],
-  "SelectedNode": "\\requirements.txt",
+  "SelectedNode": "\\simplecitytours\\urls.py",
   "PreviewInSolutionExplorer": false
 }

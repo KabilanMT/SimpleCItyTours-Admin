@@ -1,0 +1,56 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="row">
+    <form class="form-horizontal" action="" method="post">
+        {% csrf_token %}
+        {% include 'app/form-template.html' %}
+        <div class="form-group">
+            <a><span type="submit" class="btn btn-success">Submit</span></a>
+        </div>
+    </form>
+</div>
+
+<!--<h2>{{ title }}</h2>
+
+<div class="row">
+    <div class="col-md-offset-3 col-md-6 align-items-center justify-content-center loginContainer">
+        <h2 class="loginFont">{{ title }}</h2>
+        <section id="loginForm">
+            <form action="." method="post" class="form-horizontal">
+                {% csrf_token %}
+                <hr />
+                <div class="form-group">
+                    <label for="id_email" class="col-md-3 control-label loginFont">Email</label>
+                    <div class="col-md-9">
+                        <input class="col-md-12"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_username" class="col-md-3 control-label loginFont">Username</label>
+                    <div class="col-md-9">
+                        <input class="col-md-12" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_password" class="col-md-3 control-label loginFont">Password</label>
+                    <div class="col-md-9">
+                        <input class="col-md-12" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-9">
+                        <input type="hidden" name="next" value="/" />
+                        <input type="submit" value="Create User" class="btn btn-default" />
+                    </div>
+                </div>
+                {% if form.errors %}
+                <p class="validation-summary-errors">Please enter a correct user name and password.</p>
+                {% endif %}
+            </form>
+        </section>
+    </div>
+</div>-->
+
+{% endblock %}

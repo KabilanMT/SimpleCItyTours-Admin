@@ -153,3 +153,8 @@ body {
 ul li {
     display: inline;
 }
+#map {
+    height: 100vw !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+}
