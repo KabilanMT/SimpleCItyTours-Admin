@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Simple City Tours - Pay Now</title>
+  <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+  <!-- jQuery is used only for this example; it isn't required to use Stripe -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    // this identifies your website in the createToken call below
+    Stripe.setPublishableKey('pk_test_YRkvVC3iO2FnXykXPzHgrjuG');
+
+    function stripeResponseHandler(status, response) {
+      if (response.error) {
+        // re-enable the submit cloudon
+        $('.submit-cloudon').removeAttr("disabled");
+        // show the errors on the form
+        $(".payment-errors").html(response.error.message);
+      } else {
+        var form$ = $("#payment-form");
+        // token contains id, last4, and card type
+        var token = response['id'];
+        // insert the token into the form so it gets submitted to the server
+        form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
+        // and submit
+        form$.get(0).submit();
+      }
+    }
+
+    $(document).ready(function() {
+      $("#payment-form").submit(function(event) {
+
+        // disable the submit cloudon to prevent repeated clicks
+        $('.submit-cloudon').attr("disabled", "disabled");
+        var chargeAmount = 300; //amount you want to charge, in cents. 1000 = $10.00, 2000 = $20.00 ...
+        // createToken returns immediately - the supplied callback submits the form if there are no errors
+        Stripe.createToken({
+          number: $('.card-number').val(),
+          cvc: $('.card-cvc').val(),
+          exp_month: $('.card-expiry-month').val(),
+          exp_year: $('.card-expiry-year').val()
+        }, chargeAmount, stripeResponseHandler);
+        return false; // submit from callback
+      });
+    });
+    if (window.location.protocol === 'file:') {
+      alert("stripe.js does not work when included in pages served over file:// URLs. Try serving this page over a webserver. Contact support@stripe.com if you need assistance.");
+    }
+  </script>
+  <style>
+    body {
+      background-image: url("https://images.pexels.com/photos/2255/black-and-white-city-houses-skyline.jpg?cs=srgb&dl=black-and-white-buildings-city-2255.jpg&fm=jpg");
+      background-position: center 25%;
+      max-width: 100%;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .container {
+      margin-top: 15%;
+    }
+
+
+    #stripeTitle {
+      font-size: 36pt;
+      font-family: impact, chicago;
+      color: #ffffff;
+      text-shadow: -1px -1px 3px #696969,
+      1px -1px 3px #696969,
+      -1px 1px 3px #696969,
+      1px 1px 3px #696969;
+    }
+
+    #stripeTitle:hover {
+      font-size: 36pt;
+      font-family: impact, chicago;
+      color: #ffffff;
+      text-shadow: -1px -1px 3px #FFBF00,
+      1px -1px 3px #FFBF00,
+      -1px 1px 3px #FFBF00,
+      1px 1px 3px #FFBF00;
+    }
+    
+    /*Lets start with the cloud formation rather*/
+
+/*The container will also serve as the SKY*/
+
+*{ margin: 0; padding: 0;}
+
+#clouds{
+	padding: 100px 0;
+  position:absolute;
+  margin-left: 800px;
+}
+
+/*Time to finalise the cloud shape*/
+.cloud {
+	width: 200px; height: 60px;
+	background: #fff;
+	
+	border-radius: 200px;
+	-moz-border-radius: 200px;
+	-webkit-border-radius: 200px;
+	
+	position: relative; 
+}
+
+.cloud:before, .cloud:after {
+	content: '';
+	position: absolute; 
+	background: #fff;
+	width: 100px; height: 80px;
+	position: absolute; top: -15px; left: 10px;
+	
+	border-radius: 100px;
+	-moz-border-radius: 100px;
+	-webkit-border-radius: 100px;
+	
+	-webkit-transform: rotate(30deg);
+	transform: rotate(30deg);
+	-moz-transform: rotate(30deg);
+}
+
+.cloud:after {
+	width: 120px; height: 120px;  
+	top: -55px; left: auto; right: 15px;
+}
+
+/*Time to animate*/
+.x1 {
+	-webkit-animation: moveclouds 15s linear infinite;
+	-moz-animation: moveclouds 15s linear infinite;
+	-o-animation: moveclouds 15s linear infinite;
+}
+
+/*variable speed, opacity, and position of clouds for realistic effect*/
+.x2 {
+	left: 200px;
+	
+	-webkit-transform: scale(0.6);
+	-moz-transform: scale(0.6);
+	transform: scale(0.6);
+	opacity: 0.6; /*opacity proportional to the size*/
+	
+	/*Speed will also be proportional to the size and opacity*/
+	/*More the speed. Less the time in 's' = seconds*/
+	-webkit-animation: moveclouds 25s linear infinite;
+	-moz-animation: moveclouds 25s linear infinite;
+	-o-animation: moveclouds 25s linear infinite;
+}
+
+.x3 {
+	left: -250px; top: -200px;
+	
+	-webkit-transform: scale(0.8);
+	-moz-transform: scale(0.8);
+	transform: scale(0.8);
+	opacity: 0.8; /*opacity proportional to the size*/
+	
+	-webkit-animation: moveclouds 20s linear infinite;
+	-moz-animation: moveclouds 20s linear infinite;
+	-o-animation: moveclouds 20s linear infinite;
+}
+
+.x4 {
+	left: 470px; top: -250px;
+	
+	-webkit-transform: scale(0.75);
+	-moz-transform: scale(0.75);
+	transform: scale(0.75);
+	opacity: 0.75; /*opacity proportional to the size*/
+	
+	-webkit-animation: moveclouds 18s linear infinite;
+	-moz-animation: moveclouds 18s linear infinite;
+	-o-animation: moveclouds 18s linear infinite;
+}
+
+.x5 {
+	left: -150px; top: -150px;
+	
+	-webkit-transform: scale(0.8);
+	-moz-transform: scale(0.8);
+	transform: scale(0.8);
+	opacity: 0.8; /*opacity proportional to the size*/
+	
+	-webkit-animation: moveclouds 20s linear infinite;
+	-moz-animation: moveclouds 20s linear infinite;
+	-o-animation: moveclouds 20s linear infinite;
+}
+
+  @media screen and (min-width: 1000px) {
+
+@-webkit-keyframes moveclouds {
+	0% {margin-left: 1000px;}
+	100% {margin-left: -1800px;}
+}
+@-moz-keyframes moveclouds {
+	0% {margin-left: 1000px;}
+	100% {margin-left: -1800px;}
+}
+@-o-keyframes moveclouds {
+	0% {margin-left: 1000px;}
+	100% {margin-left: -1800px;}
+}
+
+}
+    .form-control:focus {
+      border-color: #FFBF00;
+      box-shadow: inset 0 1px 1px rgba(255, 191, 0, 0.075), 0 0 8px rgba(255, 191, 0, 0.6);
+    }
+
+    @media screen and (max-width: 1000px) {
+      body {
+        background-image: url("https://images.pexels.com/photos/2255/black-and-white-city-houses-skyline.jpg?cs=srgb&dl=black-and-white-buildings-city-2255.jpg&fm=jpg");
+        background-position: center center;
+        background-size: 300vw 200vh;
+      }
+
+      .container {
+        margin-top: 10%;
+      }
+
+
+    #clouds{
+        margin-left: -500px;
+    }
+    
+    @-webkit-keyframes moveclouds {
+    	0% {margin-left: 1000px;}
+    	100% {margin-left: -1000px;}
+    }
+    @-moz-keyframes moveclouds {
+    	0% {margin-left: 1000px;}
+    	100% {margin-left: -1000px;}
+    }
+    @-o-keyframes moveclouds {
+    	0% {margin-left: 1000px;}
+    	100% {margin-left: -1000px;}
+    }
+
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <cloudon type="cloudon" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </cloudon>
+        <a class="navbar-brand" href="#">Simple City Tours</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Admin</a></li>
+          <li class="active"><a href="#">Shop</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container"> 
+        <p><span id="stripeTitle">Charge $3 with Stripe</span></p>
+    <div id="clouds">
+    	<div class="cloud x1"></div>
+    	<!-- Time for multiple clouds to dance around -->
+    	<div class="cloud x2"></div>
+    	<div class="cloud x3"></div>
+    	<div class="cloud x4"></div>
+    	<div class="cloud x5"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 col-sm-12" id="info">
+        <form>
+          <div class="form-group row">
+            <div class=" col-xs-12">
+            <label for="userName">Username</label>
+            <input type="text" class="form-control" id="userName">
+          </div>
+          </div>
+          <div class="form-group row">
+            <div class=" col-xs-12">
+            <label for="dropdown">City</label>
+            <div class="dropdown">
+              <cloudon class="btn btn-default dropdown-toggle" type="cloudon" id="menu1" data-toggle="dropdown">Cities
+                <span class="caret"></span></cloudon>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Vancouver</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Victoria</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">New York</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+      <div class="col-md-6  col-sm-12" id="payment">
+        <!-- to display errors returned by createToken -->
+        <span class="payment-errors"></span>
+        <form action="" method="POST" class="form-horizontal" id="payment-form">
+          <div class="form-group row">
+            <div class=" col-md-7 col-xs-8">
+              <label for="card-number">Card Number</label><br />
+              <input type="text" size="20" autocomplete="off" class="card-number form-control" />
+            </div>
+
+            <div class="col-md-2 col-xs-4">
+              <label>CVC</label>
+              <input type="text" size="4" autocomplete="off" class="card-cvc form-control" />
+            </div>
+          </div>
+          <label>Expiration (MM/YYYY)</label>
+          <div class="form-group row">
+            <div class="col-md-4 col-xs-5">
+              <input type="text" class="form-control card-expiry-month" id="inputKey" placeholder="MM">
+            </div>
+            <div class="col-md-5 col-xs-7">
+              <input type="text" class="form-control card-expiry-year" id="inputValue" placeholder="YYYY">
+            </div>
+          </div>
+          <cloudon type="submit" class="submit-cloudon btn btn-lg btn-warning pull-right" style="margin-top: 10%">Submit Payment</cloudon>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(function() {
+      $(".dropdown-menu li a").click(function() {
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+      });
+
+    });
+  </script>
+</body>
+
+</html>
