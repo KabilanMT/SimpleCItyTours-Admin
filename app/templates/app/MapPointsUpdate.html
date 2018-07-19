@@ -1,0 +1,102 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<h1>Map</h1>
+<div id="map"></div>
+
+<script>
+    function initMap() {
+        //map options
+        var options = {
+            zoom: parseInt('{{ city.zoom }}'),
+            center: {
+                lat: parseInt('{{ city.lat }}'),
+                lng: parseInt('{{ city.lng }}')
+            }
+        }
+        //create map
+        var map = new google.maps.Map(document.getElementById('map'), options);
+
+        var points = '{{ polygon }}';
+        points = points.replace(/&quot;/g, '"');
+        points = JSON.parse(points);
+        //polygon defaults
+        poly = new google.maps.Polygon({
+            path: points,
+            strokeColor: '#cccc00',
+            strokeOpacity: 1.0,
+            strokeWeight: 3,
+            fillColor: 'yellow',
+            fillOpacity: 0.3,
+            editable: true
+        });
+        poly.setMap(map);
+        newPolygons = poly;
+
+
+        // Listen from click on map
+        google.maps.event.addListener(map, 'click',
+            function (event) {
+                //Add Marker
+                addMarker({ coords: event.latLng });
+            });
+        /*
+                Basics of Google Maps API
+                //add marker
+                var marker = new google.maps.Marker({
+                  position:{lat: 49.246292, lng: -123.116226},
+                  map:map,
+                  icon:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+                });
+                //Displays info on marker
+                var infoWindow = new google.maps.InfoWindow({
+                  content: '<h1>Vancouver BC</h1>'
+                });
+                //Calls infowindow variable to display content
+                marker.addListener('click', function(){
+                  infoWindow.open(map,marker);
+                });
+        */
+        var markers = [
+            {
+                coords: { lat: 49.246292, lng: -123.116226 },
+                iconImage: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+                description: "<h1>Vancouver</h1>"
+            },
+            {
+                coords: { lat: 49.1967, lng: -123.1815 },
+                description: "<h1>Vancouver - Airport</h1>"
+            }
+        ];
+        //Looks through markers array and adds markers to map
+        for (var i = 0; i < markers.length; i++) {
+            addMarker(markers[i]);
+        }
+        //Add Marker Function
+        function addMarker(props) {
+            var marker = new google.maps.Marker({
+                position: props.coords,
+                map: map,
+            });
+            if (props.iconImage) {
+                marker.setIcon(props.iconImage);
+            }
+            if (props.description) {
+                var infoWindow = new google.maps.InfoWindow({
+                    content: props.description
+                });
+                marker.addListener('click', function () {
+                    infoWindow.open(map, marker);
+                });
+            }
+        }
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCROEB3riRr0oF3XNPfS-o3iL7MOEck90I&callback=initMap"
+        async defer></script>
+{% endblock %}

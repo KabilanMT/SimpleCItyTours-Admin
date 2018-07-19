@@ -1,0 +1,48 @@
+<style>
+    #id_description {
+        max-height: 60px;
+        width: 620px;
+    }
+</style>
+<li class="list-group-item">
+        <div>
+            <span class="text-danger small">{{form.name.errors}}</span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">{{form.name.label_tag}}</span>
+            <div>{{form.name}}</div>
+        </div>
+</li>
+<li class="list-group-item">
+        <div>
+            <span class="text-danger small">{{form.description.errors}}</span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">{{form.description.label_tag}}</span>
+            <div>{{form.description}}</div>
+        </div>
+</li><li class="list-group-item">
+        <div>
+            <span class="text-danger small">{{form.adminuser.errors}}</span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">{{form.adminuser.label_tag}}</span>
+            <div>{{form.adminuser}}</div>
+        </div>
+</li><li class="list-group-item">
+        <div>
+            <span class="text-danger small">{{form.price.errors}}</span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">{{form.price.label_tag}}</span>
+            <div>{{form.price}}</div>
+        </div>
+</li><li class="list-group-item">
+        <div>
+            <span class="text-danger small">{{form.visibility.errors}}</span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon">{{form.visibility.label_tag}}</span>
+            <div class="form-control" type="checkbox">{{form.visibility}}</div>
+        </div>
+</li>

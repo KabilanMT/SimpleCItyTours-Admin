@@ -158,3 +158,11 @@ ul li {
     width: 100vw !important;
     max-width: 100% !important;
 }
+#addUserBut {
+    margin-top: 30px !important;
+}
+
+.input-group-addon {
+    min-width: 105px !important;
+    text-align: left !important;
+}

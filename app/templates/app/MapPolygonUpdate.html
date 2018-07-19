@@ -1,0 +1,390 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<h1>Create City Map</h1>
+
+<div>
+    <div id="map" style="height: 100vh; width: 100vw; max-width: 100%;"></div>
+</div>
+
+<div class="container" style="margin-top:30px;">
+    <form>
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary" onclick="createMap()">Create Map</button>
+            <button type="button" class="btn btn-danger" onClick="window.location.reload()">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    var map;
+    var newPolygons = [];
+    var infoWindow;
+
+
+    var listvalues = localStorage.getItem('lists');
+    //parse the value
+    var finalvalue = JSON.parse(listvalues);
+
+    //Create Map Function on Button Click
+    function createMap() {
+      //city = document.getElementById('citynameInput').value;
+      //description = document.getElementById('descriptionInput').value;
+      //img = document.getElementById('imgInput').value;
+      //Map Options
+      var newOptions = {
+        zoom: map.zoom,
+        center: map.center
+      }
+
+      //Overwrite Existing map
+      map = new google.maps.Map(document.getElementById('map'), newOptions);
+
+      //Add Polygons
+      var polygon = new google.maps.Polygon(newPolygons);
+      polygon.setMap(map);
+
+      //coordinates of the polygon
+      var coordinates = polygon.getPath().getArray();
+      console.log(coordinates);
+
+      //Show Name and Description on Click
+      polygon.addListener('click', function(event) {
+        infoWindow = new google.maps.InfoWindow;
+        infoWindow.setContent("<b>" + city + "</b><br />" + description);
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+      });
+
+      $.ajax({
+            "type": "POST",
+            "url": "/updatePolygon/",
+            "data": {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                name: '{{city.name}}',
+                points: JSON.stringify(coordinates),
+                strokeColor: '#cccc00',
+                strokeOpacity: 1.0,
+                strokeWeight: 3,
+                fillColor: 'yellow',
+                fillOpacity: 0.05
+            },
+            "success": function (result) {
+                console.log(result);
+            },
+            "error": function (xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            },
+        });
+    }
+
+    //Initial Map
+    function initMap() {
+        //map options
+        var defaultOptions = {
+            zoom: parseInt('{{ city.zoom }}'),
+            center: {
+                lat: parseInt('{{ city.lat }}'),
+                lng: parseInt('{{ city.lng }}')
+            }
+        }
+
+        //create map
+        map = new google.maps.Map(document.getElementById('map'), defaultOptions);
+
+        var points = '{{ polygon }}';
+        points = points.replace(/&quot;/g, '"');
+        points = JSON.parse(points);
+        //polygon defaults
+        poly = new google.maps.Polygon({
+            path: points,
+            strokeColor: '#cccc00',
+            strokeOpacity: 1.0,
+            strokeWeight: 3,
+            fillColor: 'yellow',
+            fillOpacity: 0.3,
+            editable: true
+        });
+        poly.setMap(map);
+        newPolygons = poly;
+
+
+        // Listen from click on map
+        google.maps.event.addListener(map, 'click',
+            function (event) {
+                debugger
+                var path = poly.getPath();
+                console.log("test");
+
+                //creates polygon once 5 points are chosen
+                if (path.length == 4) {
+                    var polygonOptions = {
+                        path: path,
+                        strokeColor: "#cccc00",
+                        fillColor: "yellow",
+                        editable: true
+                    };
+                    var polygon = new google.maps.Polygon(polygonOptions);
+                    polygon.setMap(map);
+                    newPolygons = polygonOptions;
+                }
+                path.push(event.latLng);
+            });
+
+
+        /*
+                Basics of Google Maps API
+                //add marker
+                var marker = new google.maps.Marker({
+                  position:{lat: 49.246292, lng: -123.116226},
+                  map:map,
+                  icon:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+                });
+  
+                //Displays info on marker
+                var infoWindow = new google.maps.InfoWindow({
+                  content: '<h1>Vancouver BC</h1>'
+                });
+  
+                //Calls infowindow variable to display content
+                marker.addListener('click', function(){
+                  infoWindow.open(map,marker);
+                });
+  
+  
+        var markers = [{
+            coords: {
+              lat: 49.246292,
+              lng: -123.116226
+            },
+            iconImage: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+            description: "<h1>Vancouver</h1>"
+          },
+          {
+            coords: {
+              lat: 49.1967,
+              lng: -123.1815
+            },
+            description: "<h1>Vancouver - Airport</h1>"
+          }
+        ];
+  
+        // //Looks through markers array and adds markers to map
+        // for(var i = 0; i < markers.length; i++){
+        //   addMarker(markers[i]);
+        // }
+        //
+        // //Add Marker Function
+        // function addMarker(props){
+        //   var marker = new google.maps.Marker({
+        //     position:props.coords,
+        //     map:map,
+        //   });
+        //
+        //   if(props.iconImage){
+        //     marker.setIcon(props.iconImage);
+        //   }
+        //
+        //   if(props.description){
+        //     var infoWindow = new google.maps.InfoWindow({
+        //       content: props.description
+        //     });
+        //
+        //     marker.addListener('click', function(){
+        //       infoWindow.open(map, marker);
+        //     });
+        //   }
+        // }
+        */
+    }
+
+    /*
+    //Initial Map
+    function initMap() {
+
+      if(localStorage["mapPolygon"] && localStorage["mapOptions"]){
+        city = finalvalue.name;
+        description = finalvalue.description;
+
+        console.log(city);
+        console.log(description);
+
+        console.log("It exists!");
+        newOptions = JSON.parse(localStorage["mapOptions"]);
+        coords = JSON.parse(localStorage["mapPolygon"]);
+
+        console.log(coords);
+        //create map
+         map = new google.maps.Map(document.getElementById('map'), newOptions);
+         var polygonOptions = {
+           paths: coords,
+           strokeColor: '#cccc00',
+           strokeOpacity: 1.0,
+           strokeWeight: 3,
+           fillColor: 'yellow',
+           fillOpacity: 0.05,
+         }
+        var polygon = new google.maps.Polygon(polygonOptions);
+        polygon.setMap(map);
+            var path = polygon.getPath();
+        // Listen from click on map
+        google.maps.event.addListener(polygon, 'click', function (event) {
+            debugger
+            console.log("CLICKED");
+
+            var polygonOptions = {
+              path: path,
+              strokeColor: "#cccc00",
+              fillColor: "yellow",
+              editable: true
+            };
+            var polygon = new google.maps.Polygon(polygonOptions);
+            polygon.setMap(map);
+            newPolygons = polygonOptions;
+          });
+
+
+        newPolygons = polygonOptions;
+
+        //Show Name and Description on Click
+        polygon.addListener('click', function(event) {
+          infoWindow = new google.maps.InfoWindow;
+          infoWindow.setContent("<b>" + city + "</b><br />" + description);
+          infoWindow.setPosition(event.latLng);
+          infoWindow.open(map);
+        });
+      }
+
+      else{
+
+      console.log("Doesn't Exist");
+      //map options
+      var defaultOptions = {
+        zoom: 3,
+        center: {
+          lat: 0,
+          lng: 0
+        }
+      }
+
+      //create map
+      map = new google.maps.Map(document.getElementById('map'), defaultOptions);
+
+      //polygon defaults
+      poly = new google.maps.Polyline({
+        strokeColor: '#cccc00',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        fillColor: 'yellow',
+        fillOpacity: 0.05
+      });
+      poly.setMap(map);
+
+
+      // Listen from click on map
+      google.maps.event.addListener(map, 'click',
+        function(event) {
+          debugger
+          var path = poly.getPath();
+            console.log("test");
+
+          //creates polygon once 5 points are chosen
+          if (path.length == 4) {
+            var polygonOptions = {
+              path: path,
+              strokeColor: "#cccc00",
+              fillColor: "yellow",
+              editable: true
+            };
+            var polygon = new google.maps.Polygon(polygonOptions);
+            polygon.setMap(map);
+            newPolygons = polygonOptions;
+          }
+          path.push(event.latLng);
+              });
+          */
+
+
+      /*
+              Basics of Google Maps API
+              //add marker
+              var marker = new google.maps.Marker({
+                position:{lat: 49.246292, lng: -123.116226},
+                map:map,
+                icon:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+              });
+
+              //Displays info on marker
+              var infoWindow = new google.maps.InfoWindow({
+                content: '<h1>Vancouver BC</h1>'
+              });
+
+              //Calls infowindow variable to display content
+              marker.addListener('click', function(){
+                infoWindow.open(map,marker);
+              });
+
+
+      var markers = [{
+          coords: {
+            lat: 49.246292,
+            lng: -123.116226
+          },
+          iconImage: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+          description: "<h1>Vancouver</h1>"
+        },
+        {
+          coords: {
+            lat: 49.1967,
+            lng: -123.1815
+          },
+          description: "<h1>Vancouver - Airport</h1>"
+        }
+      ];
+
+      // //Looks through markers array and adds markers to map
+      // for(var i = 0; i < markers.length; i++){
+      //   addMarker(markers[i]);
+      // }
+      //
+      // //Add Marker Function
+      // function addMarker(props){
+      //   var marker = new google.maps.Marker({
+      //     position:props.coords,
+      //     map:map,
+      //   });
+      //
+      //   if(props.iconImage){
+      //     marker.setIcon(props.iconImage);
+      //   }
+      //
+      //   if(props.description){
+      //     var infoWindow = new google.maps.InfoWindow({
+      //       content: props.description
+      //     });
+      //
+      //     marker.addListener('click', function(){
+      //       infoWindow.open(map, marker);
+      //     });
+      //   }
+      // }
+      }
+    }
+    */
+    // $(function() {
+
+    //   $("#citynameInput").val(finalvalue.name);
+    //   $("#descriptionInput").val(finalvalue.description);
+
+    // });
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCROEB3riRr0oF3XNPfS-o3iL7MOEck90I&callback=initMap" async defer></script>
+{% endblock %}

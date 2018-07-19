@@ -2,7 +2,7 @@
     {% if user.is_superuser %}
     <ul class="nav navbar-nav">
         <li><a href="{% url 'locations' %}">Locations</a></li>
-        <li><a href="{% url 'userCreation' %}">Users</a></li>
+        <li><a href="{% url 'users' %}">Users</a></li>
         <li><a href="{% url 'map' %}">map</a></li>
     </ul>
     <form id="logoutForm" action="/logout" method="post" class="navbar-right">
@@ -15,7 +15,11 @@
     </form>
     {% else %}
     <ul class="nav navbar-nav">
-        <li><a href="cityUpdate/{{cityid}}">{{city}}</a></li>
+        {% if city.id %}
+            <li><a href="{% url 'cityPointsUpdate' city.id %}">{{city}}</a></li>
+        {% else %}
+            <li></li>
+        {% endif %}
         <li><a href="{% url 'home' %}">Payment Info</a></li>
     </ul>
     <form id="logoutForm" action="/logout" method="post" class="navbar-right">

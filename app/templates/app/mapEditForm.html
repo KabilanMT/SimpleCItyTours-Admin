@@ -1,0 +1,38 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<div class="row">
+     <form class="form-horizontal" action="" method="post">
+         <ul class="list-group">
+             {% csrf_token %}
+             {% include 'app/form-edit-template.html' %}
+             <li class="list-group-item">
+                    <div class="input-group">
+                        <span class="input-group-addon">Map Bounds</span>
+                        <input id="mapBounds" type="text" class="form-control pull-left" name="mapBounds" disabled> 
+                        <span class="input-group-btn">
+                            <a href="{% url 'cityPolygonUpdate' view.get_pk %}"><span class="btn btn-primary editBut" id="polyEdit"><span class="glyphicon glyphicon-edit"></span>Edit</span></a>
+                        </span>
+                    </div>
+                </li>
+    
+                <li class="list-group-item">
+                    <div class="input-group">
+                        <span class="input-group-addon">Map Points</span>
+                        <input id="mapPoints" type="text" class="form-control pull-left" name="mapPoints" disabled>
+                        <span class="input-group-btn">
+                            <a href="{% url 'cityPointsUpdate' view.get_pk %}"><span class="btn btn-primary editBut" id="pointsEdit"><span class="glyphicon glyphicon-edit"></span>Edit</span></a>
+                        </span>
+                    </div>
+                </li>
+             <li>
+                 <button type="submit" class="btn btn-success pull-right">Save</button>
+             </li>
+         </ul>
+     </form>
+</div>
+
+{% endblock %}
