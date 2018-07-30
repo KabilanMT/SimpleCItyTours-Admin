@@ -166,3 +166,11 @@ ul li {
     min-width: 105px !important;
     text-align: left !important;
 }
+
+#audInput:valid+#audUploaded {
+    visibility: visible !important;
+}
+
+button.disabled{
+    display: none !important;
+}

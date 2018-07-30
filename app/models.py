@@ -68,24 +68,28 @@ class Location(models.Model):
 #This class describes the type of the location point on the map
 class PointType(models.Model):
 	name = models.CharField(max_length=255, null=True)
+	def __str__(self):
+		return self.name
 
 
 
 # Point class for storing info about one location point
 class Point(models.Model):
 	location = models.ForeignKey(Location, models.CASCADE, null=True)
-	pointtypes =  models.ManyToManyField(PointType, blank=True)
+	pointtypes =  models.ForeignKey(PointType, models.CASCADE, null=True)
 	created = models.DateTimeField(auto_now_add=True, editable=False, null=True)
 	last_updated = models.DateTimeField(auto_now=True, editable=False, null=True)
 	lat = models.DecimalField(decimal_places=19, max_digits=23,null=True)
 	lng = models.DecimalField(decimal_places=19, max_digits=23,null=True)
-	name = models.CharField(max_length=255,null=True)
-	description = models.CharField(max_length=1000,null=True)
+	name = models.CharField(max_length=255,null=True,unique=True)
+	description = models.CharField(max_length=1000,null=True,unique=True)
 	visibility =  models.BooleanField(default=True)
 	radius = models.DecimalField(decimal_places=4, max_digits=10,null=True)
-	audioFile = models.FileField(null=True, blank=True, upload_to=audioFileLocation)
+	audioFile = models.FileField(null=True, blank=True, upload_to=audioFileLocation,unique=True)
 	content_type = models.CharField(max_length=255,null=True, blank=True)
 	img = models.CharField(max_length=255,null=True)
+	def __str__(self):
+		return self.name
 
 
 

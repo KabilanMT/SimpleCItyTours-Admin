@@ -1,0 +1,168 @@
+body {
+}
+
+.loginContainer {
+    background-color: #3c3d41;
+    margin-top: 20px;
+    border-radius: 20px;
+    padding-top:10px;
+    padding-bottom: 10px;
+}
+
+.loginFont {
+    color: #ffffff;
+}
+
+.navbarStyle {
+    background-color: #3c3d41 !important;
+    border-color: #3c3d41 !important;
+}
+
+#carouselCont {
+    padding-top: 11px;
+    padding-bottom: 20px;
+}
+
+#myFooter {
+    background-color: #3c3d41;
+    color: white;
+    padding-top: 30px;
+    bottom: 0;
+    width: 100%;
+}
+
+
+#myFooter .row {
+    margin-bottom: 60px;
+}
+
+#myFooter .navbar-brand {
+    margin-top: 45px;
+    height: 65px;
+}
+
+
+
+#myFooter h2 a {
+    font-size: 50px;
+    text-align: center;
+    color: #fff;
+
+}
+
+#myFooter a {
+    color: #d2d1d1;
+    text-decoration: none;
+}
+
+#myFooter a:hover,
+#myFooter a:focus {
+    text-decoration: none;
+    color: white;
+}
+
+#myFooter .social-networks {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 16px;
+}
+
+#myFooter .social-networks a {
+    font-size: 32px;
+    color: #f9f9f9;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+#myFooter .social-networks a:hover {
+    text-decoration: none;
+
+}
+
+#myFooter .facebook:hover {
+    color: #0077e2;
+}
+
+#myFooter .google:hover {
+    color: #ef1a1a;
+
+}
+
+#myFooter .twitter:hover {
+    color: #00aced;
+}
+
+#myFooter .btn {
+    color: white;
+    background-color: #d84b6b;
+    border-radius: 20px;
+    border: none;
+    width: 150px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;
+    line-height: 25px;
+}
+
+.CityPic {
+    border-radius: 10%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.cityDiv {
+    margin-bottom: 30px;
+}
+
+.cityText {
+    background-color: whitesmoke;
+    padding: 2%;
+    border-radius: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    font-family: "Courier New", Courier, monospace
+}
+
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.editBut {
+    background-color: #3379b8;
+    font-size: 20px;
+    margin-bottom: 5px;
+    border-radius: 10%;
+    padding: 3%;
+}
+
+.cityDiv:hover .CityPic {
+    background-color: #FFD000;
+    opacity: 0.6;
+    filter: alpha(opacity=60); /* msie */
+}
+
+.cityDiv:hover .middle {
+    opacity: 1;
+}
+
+ul li {
+    display: inline;
+}
+#map {
+    height: 100vw !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+}
+#addUserBut {
+    margin-top: 30px !important;
+}
+
+.input-group-addon {
+    min-width: 105px !important;
+    text-align: left !important;
+}

@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from django.template import RequestContext
 from datetime import datetime
-from .models import Location, Polygon, Point
+from .models import Location, Polygon, Point, PointType
 from django.contrib.auth.models import User
 from django.views import generic
 from django.views.generic.edit import DeleteView, UpdateView, CreateView, View
@@ -185,10 +185,11 @@ def cityPointsUpdate(request, pk):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        'app/MapPointsUpdate.html',
+        'app/Superuser-MapPoints.html',
         {
             'title':'Edit Points of Interest',
             'city': location,
+            'points': Point.objects.all(),
             'polygon': location.polygon.points,
             'year':datetime.now().year,
         }
@@ -298,18 +299,21 @@ def createPoint(request):
     """Posting to database"""
     if request.is_ajax():
         if request.method == "POST":
-            polygon = Polygon.objects.get(name=request.POST['name'])
-            city = Location.objects.create(
-                name=request.POST['name'],
-                description=request.POST['description'],
-                lat=request.POST['lat'],
-                lng=request.POST['lng'],
-                radius=request.POST['radius'],
-                location = request.POST['location'],
-                img=request.POST['img'],
-                polygon=polygon
-                )
-            return redirect(city)
+            exists = Point.objects.filter(name=request.POST['name']).count()
+            if exists == 0:
+                location = Location.objects.get(name=request.POST['locationName'])
+                pointtypes = PointType.objects.get(name=request.POST['typeName'])
+                point = Point()
+                point.location = location
+                point.pointtypes = pointtypes
+                point.lat = request.POST['lat']
+                point.lng = request.POST['lng']
+                point.name = request.POST['name']
+                point.description = request.POST['description']
+                point.save()
+                return redirect(home)
+            else:
+                return redirect(home)
             
 
 #def userCreation(request):
@@ -324,3 +328,15 @@ def createPoint(request):
 #            'year':datetime.now().year,
 #        }
 #    )
+
+def payment(request):
+    """Renders the city creation page."""
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/stripe.html',
+        {
+            'message':'Your application description page.',
+            'year':datetime.now().year,
+        }
+    )

@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^cityUpdateAdmin/(?P<pk>[0-9]+)/$', app.views.cityUpdateAdmin.as_view(), name='cityUpdateAdmin'),
     url(r'^cityPolygonUpdate/(?P<pk>[0-9]+)/$', app.views.cityPolygonUpdate, name='cityPolygonUpdate'),
     url(r'^cityPointsUpdate/(?P<pk>[0-9]+)/$', app.views.cityPointsUpdate, name='cityPointsUpdate'),
+    url(r'^createPoint/$', app.views.createPoint, name='createPoint'),
+    url(r'^payment/$', app.views.payment, name='payment'),
     url(r'^about', app.views.about, name='about'),
     url(r'^login/$',
         django.contrib.auth.views.login,
