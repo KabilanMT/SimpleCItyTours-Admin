@@ -1,0 +1,25 @@
+{% extends "app/layout.html" %}{% load staticfiles %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<div class="row">
+    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+        <!-- <img src="{% static 'app/content/shedinja.jpg' %}" /> -->
+    </form>
+    {% for file in files %}
+        <div>{{ file.filename }}</div>
+        <audio controls>
+                <source src="/media/{{ file.filename }}" type="audio/mpeg">
+        </audio>
+        <script>
+                console.log('{{ file.filename }}');
+        </script>
+    {% endfor %}
+</div>
+
+{% endblock %}

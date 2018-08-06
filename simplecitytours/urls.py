@@ -5,6 +5,8 @@ Definition of urls for simplecitytours.
 from datetime import datetime
 from django.conf.urls import url
 import django.contrib.auth.views
+from django.conf import settings
+from django.conf.urls.static import static
 
 import app.forms
 import app.views
@@ -34,6 +36,7 @@ urlpatterns = [
     url(r'^cityPointsUpdate/(?P<pk>[0-9]+)/$', app.views.cityPointsUpdate, name='cityPointsUpdate'),
     url(r'^createPoint/$', app.views.createPoint, name='createPoint'),
     url(r'^payment/$', app.views.payment, name='payment'),
+    url(r'^audio/$', app.views.audio, name='audio'),
     url(r'^about', app.views.about, name='about'),
     url(r'^login/$',
         django.contrib.auth.views.login,
@@ -56,3 +59,6 @@ urlpatterns = [
      url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
      url(r'^admin/', include(admin.site.urls)),
 ]
+
+if settings.DEBUG is True:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

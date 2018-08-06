@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.urlresolvers import reverse
-
+import os
 
 
 #returns date after which the purchased items expires
@@ -85,7 +85,7 @@ class Point(models.Model):
 	description = models.CharField(max_length=1000,null=True,unique=True)
 	visibility =  models.BooleanField(default=True)
 	radius = models.DecimalField(decimal_places=4, max_digits=10,null=True)
-	audioFile = models.FileField(null=True, blank=True, upload_to=audioFileLocation,unique=True)
+	audioFile = models.FileField(null=True, upload_to=audioFileLocation)
 	content_type = models.CharField(max_length=255,null=True, blank=True)
 	img = models.CharField(max_length=255,null=True)
 	def __str__(self):
@@ -120,3 +120,8 @@ class AdminActiveTime(models.Model):
 	startDate = models.DateTimeField()
 	endDate = models.DateTimeField(null=True)
 	location = models.ForeignKey(Location, models.PROTECT)
+
+class Audio(models.Model):
+	fileUpload = models.FileField(null=True)
+	def filename(self):
+		return os.path.basename(self.fileUpload.name)

@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from django.template import RequestContext
 from datetime import datetime
-from .models import Location, Polygon, Point, PointType
+from .models import Location, Polygon, Point, PointType, Audio
 from django.contrib.auth.models import User
 from django.views import generic
 from django.views.generic.edit import DeleteView, UpdateView, CreateView, View
@@ -310,6 +310,7 @@ def createPoint(request):
                 point.lng = request.POST['lng']
                 point.name = request.POST['name']
                 point.description = request.POST['description']
+                point.audioFile = request.FILES[request.POST['audioFile']]
                 point.save()
                 return redirect(home)
             else:
@@ -338,5 +339,20 @@ def payment(request):
         {
             'message':'Your application description page.',
             'year':datetime.now().year,
+        }
+    )
+
+def audio(request):
+    """Renders the city creation page."""
+    if request.method == 'POST':
+        instance = Audio(fileUpload=request.FILES['file'])
+        instance.save()
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        'app/fileUpload.html',
+        {
+            'title':'file upload',
+            'files': Audio.objects.all()
         }
     )
