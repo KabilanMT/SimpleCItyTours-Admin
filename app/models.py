@@ -14,7 +14,7 @@ def paymentEndDate():
 	return timezone.now() + timezone.timedelta(days=366)
 #returns audio file location on server
 def audioFileLocation(instance, filename):
-	return str(instance.location.pk) + "/" + str(instance.pk) + "/" + filename
+	return str(instance.location.pk) + "/" + filename
 #returns landing page location
 def landingPageLocation(instance, filename):
 	return "landingPage/" + str(instance.pk) + "/" + filename
@@ -48,17 +48,17 @@ class Location(models.Model):
     name = models.CharField(max_length=255,null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     last_updated = models.DateTimeField(auto_now=True, editable=False, null=True)
-    isReady = models.BooleanField(default=False)
+    # isReady = models.BooleanField(default=False)
     # adminuser = models.ForeignKey(User, null=True)
     adminuser = models.ForeignKey(User, on_delete=models.PROTECT)
     lat = models.DecimalField(decimal_places=19, max_digits=23,null=True)
     lng = models.DecimalField(decimal_places=19, max_digits=23,null=True)
     price = models.DecimalField(decimal_places=2, max_digits=12,null=True)
-    visibility = models.BooleanField(default=True)
+    # visibility = models.BooleanField(default=True)
     description = models.CharField(max_length=1000,null=True)
     polygon = models.OneToOneField(Polygon, models.PROTECT ,null=True)
     zoom = models.IntegerField(null=True)
-    img = models.CharField(max_length=255,default="/not_set")
+    # img = models.CharField(max_length=255,default="/not_set")
     def __str__(self):
         return self.name
     def get_absolute_url(self):
@@ -122,6 +122,7 @@ class AdminActiveTime(models.Model):
 	location = models.ForeignKey(Location, models.PROTECT)
 
 class Audio(models.Model):
+	name = models.CharField(max_length=255,null=True)
 	fileUpload = models.FileField(null=True)
 	def filename(self):
 		return os.path.basename(self.fileUpload.name)

@@ -7,9 +7,17 @@
 <div class="row">
     <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="file" name="file">
-        <button type="submit">Upload</button>
-        <!-- <img src="{% static 'app/content/shedinja.jpg' %}" /> -->
+        <ul>
+            <li>
+                <input type="text" name="name"/>
+            </li>
+            <li>
+                <input type="file" name="file">
+            </li>
+            <li>
+                <button type="submit">Upload</button>
+            </li>
+        </ul>
     </form>
     {% for file in files %}
         <div>{{ file.filename }}</div>

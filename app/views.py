@@ -181,6 +181,20 @@ def cityPolygonUpdate(request, pk):
 
 def cityPointsUpdate(request, pk):
     """Renders the locations page."""
+    if request.method == 'POST':
+        exists = Point.objects.filter(name=request.POST['name']).count()
+        if exists == 0:
+            pointtypes = PointType.objects.get(name=request.POST.get('tourtype', False))
+            point = Point()
+            point.location = Location.objects.get(pk=pk)
+            point.pointtypes = pointtypes
+            point.lat = request.POST.get('lat')
+            point.lng = request.POST.get('lng')
+            point.name = request.POST['name']
+            point.description = request.POST.get('description')
+            point.audioFile = request.FILES['file']
+            point.save()
+
     location = Location.objects.get(pk=pk)
     assert isinstance(request, HttpRequest)
     return render(
@@ -289,8 +303,8 @@ def createCity(request):
                 lng=request.POST['lng'],
                 price=request.POST['price'],
                 zoom=request.POST['zoom'],
-                adminuser=User.objects.all()[:1].get(),
-                img=request.POST['img'],
+                adminuser=User.objects.get(username="admin"),
+                # img=request.POST['img'],
                 polygon=polygon
                 )
             return redirect(city)
@@ -310,7 +324,7 @@ def createPoint(request):
                 point.lng = request.POST['lng']
                 point.name = request.POST['name']
                 point.description = request.POST['description']
-                point.audioFile = request.FILES[request.POST['audioFile']]
+                # point.audioFile = request.FILES['file']
                 point.save()
                 return redirect(home)
             else:
@@ -335,7 +349,7 @@ def payment(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        'app/stripe.html',
+        'app/Stripe.html',
         {
             'message':'Your application description page.',
             'year':datetime.now().year,
@@ -345,7 +359,7 @@ def payment(request):
 def audio(request):
     """Renders the city creation page."""
     if request.method == 'POST':
-        instance = Audio(fileUpload=request.FILES['file'])
+        instance = Audio(fileUpload=request.FILES['file'], name=request.POST['name'])
         instance.save()
     assert isinstance(request, HttpRequest)
     return render(

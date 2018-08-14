@@ -1,0 +1,448 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<h2>Edit City Points</h2>
+
+<div class="container">
+  <ul class="list-group">
+    <form>
+      <li class="list-group-item ">
+        <div class="input-group">
+          <span class="input-group-addon">Tour Type</span>
+          <input id="adminUser" type="text" class="form-control pull-left" name="adminuser" disabled>
+          <span class="input-group-btn">
+            <div class="dropdown pull-right" id="tourDropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownButton" >Click Here
+            <span class="caret"></span></button>
+          <ul class="dropdown-menu" id="tourDropdownList">
+          </ul>
+        </div>
+        </span>
+</div>
+<button data-toggle="collapse" data-target="#demo" class="invisible" id="collapseButton">Collapsible</button>
+
+</li>
+<div class="collapse collapse-class" id="demo">
+
+  <li class="list-group-item">
+    <div class="input-group">
+      <span class="input-group-addon">Name</span>
+      <input id="name" type="text" class="form-control" name="Name" placeholder="Point's Name">
+    </div>
+  </li>
+
+  <li class="list-group-item">
+    <div class="input-group">
+      <span class="input-group-addon">Description</span>
+      <textarea id="description" type="text" class="form-control" name="Description" placeholder="Point's Description"></textarea>
+    </div>
+  </li>
+
+  <li class="list-group-item">
+
+    <div class="input-group">
+      <span class="input-group-addon">Audio</span>
+      <input type="text" class="form-control pull-left" disabled>
+      <span class="input-group-btn">
+<label class="btn btn-default btn-file">
+    Browse: <input type="file" accept="audio/*"  id="audInput" style="display:none;"  required>
+          <span id="audUploaded" style="visibility: hidden;">File Uploaded</span>
+      </label>
+      </span>
+    </div>
+  </li>
+  <div class="pull-right">
+    <button type="button" class="btn btn-info disabled" id="editBut">Update Point</button>
+    <button type="button" class="btn btn-success" onclick="createPoint()">Create Point</button>
+    <button type="button" class="btn btn-warning" onClick="window.location.reload()">Cancel</button>
+    <button type="button" class="btn btn-danger disabled" id="delBut">DELETE</button>
+  </div>
+</div>
+</form>
+</ul>
+</div>
+
+
+
+
+<div id="map"></div>
+<div class="pull-right">
+  <button type="button" class="btn btn-primary" onclick="savePoints()">Save Points</button>
+</div>
+<script>var dbPoints = [];</script>
+{% for point in  points %}
+  <script>
+    data = {
+      name: '{{ point.name }}',
+      description: '{{ point.description }}',
+      markerPosition: { "lat": parseFloat('{{ point.lat }}'), "lng": parseFloat('{{ point.lng }}')},
+      tourType: '{{ point.pointtypes.name }}'
+    };
+    dbPoints.push(data);
+  </script>
+{% endfor %}
+
+<script>
+  var map;
+  var infoWindow;
+  var image;
+  var marker;
+  var gmarkers = [];
+  var curMarker;
+  var tourTypes = {
+    "Tour One": "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+    "Tour Two": 'http://maps.google.com/mapfiles/marker_yellow.png',
+    "Tour Three": "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png",
+    "Tour Four": "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
+    "Tour Five": "https://maps.gstatic.com/mapfiles/ms2/micons/purple-dot.png",
+    "Tour Six": "https://maps.gstatic.com/mapfiles/ms2/micons/pink-dot.png",
+    "Tour Seven": "https://maps.gstatic.com/mapfiles/ms2/micons/cycling.png",
+    "Tour Eight": "https://maps.gstatic.com/mapfiles/ms2/micons/coffeehouse.png",
+    "Tour Nine": "https://maps.gstatic.com/mapfiles/ms2/micons/ltblu-pushpin.png",
+    "Tour Ten": "https://maps.gstatic.com/mapfiles/ms2/micons/purple-pushpin.png"
+  }; //Replace this with an array of admin users from the database
+  //Looks through array and populates dropdown with admin users
+  for (var i = 0; i < Object.keys(tourTypes).length; i++) {
+
+    var li = document.createElement("LI");
+    var a = document.createElement("A");
+    var text = document.createTextNode(Object.keys(tourTypes)[i]);
+
+    a.href = "#";
+    a.appendChild(text);
+    li.appendChild(a);
+    document.getElementById("tourDropdownList").appendChild(li);
+  }
+  var listvalues = localStorage.getItem('lists');
+  //parse the value
+  var finalvalue = JSON.parse(listvalues);
+
+  //Create Point Function on Button Click
+  function createPoint() {
+    $(function() {
+      $('#delBut').addClass("disabled");
+      $('#editBut').addClass("disabled");
+      var mapPointsInfo = [{
+        "name": $('#name').val(),
+        "description": $("#description").val(),
+        "audInput": $("#audInput").val(),
+        "tourType": $('#dropdownButton').text().slice(0, -1),
+        "markerPositon": marker.getPosition()
+      }]
+
+      if(localStorage["mapPointsInfo"]){
+        console.log(localStorage["mapPointsInfo"]);
+          var newMarkerPointsInfo = JSON.parse(localStorage["mapPointsInfo"]);
+          console.log(newMarkerPointsInfo);
+          mapPointsInfo = mapPointsInfo[0];
+          newMarkerPointsInfo.push(mapPointsInfo);
+          console.log(newMarkerPointsInfo);
+          localStorage.setItem('mapPointsInfo', JSON.stringify(newMarkerPointsInfo));
+      }
+      else{
+      localStorage.setItem('mapPointsInfo', JSON.stringify(mapPointsInfo));
+      }
+    })
+
+    if (confirm("Saved!")) {
+      window.location.reload();
+    }
+  }
+  
+  function savePoints() {
+    var pointList = localStorage.mapPointsInfo;
+    pointList = pointList.replace(/&quot;/g, '"');
+    pointList = JSON.parse(pointList);
+    for (i = 0; i < pointList.length; i++){
+      var addPoint = pointList[i];
+      $.ajax({
+            "type": "POST",
+            "url": "/createPoint/",
+            "data": {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                name: addPoint.name,
+                description: addPoint.description,
+                typeName: addPoint.tourType,
+                locationName: '{{ city.name }}',
+                lat: addPoint.markerPositon.lat,
+                lng: addPoint.markerPositon.lng,
+                audioFile: addPoint.audInput
+            },
+            "success": function (result) {
+                console.log(result);
+            },
+            "error": function (xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            },
+        });
+    }
+  }
+
+  //Initial Map
+  function initMap() {
+    if (5==5) {
+      console.log("It exists!");
+      var newOptions = {
+          zoom: parseInt('{{ city.zoom }}'),
+          center: {
+              lat: parseInt('{{ city.lat }}'),
+              lng: parseInt('{{ city.lng }}')
+          }
+      }
+      coords = '{{ polygon }}';
+      coords = coords.replace(/&quot;/g, '"');
+      coords = JSON.parse(coords);
+
+      console.log(coords);
+      //create map
+      map = new google.maps.Map(document.getElementById('map'), newOptions);
+      var polygonOptions = {
+        paths: coords,
+        strokeColor: '#cccc00',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        fillColor: 'yellow',
+        fillOpacity: 0.3,
+      }
+      var polygon = new google.maps.Polygon(polygonOptions);
+      polygon.setMap(map);
+      var path = polygon.getPath();
+      // Listen from click on map
+      google.maps.event.addListener(polygon, 'click', function(event) {
+        debugger
+        console.log("CLICKED");
+
+        var polygonOptions = {
+          path: path,
+          strokeColor: "#cccc00",
+          fillColor: "yellow",
+          editable: false
+        };
+        var polygon = new google.maps.Polygon(polygonOptions);
+        polygon.setMap(map);
+        newPolygons = polygonOptions;
+      });
+
+
+      newPolygons = polygonOptions;
+
+      //Show Name and Description on Click
+      polygon.addListener('click', function(event) {
+        $(function() {
+          var buttonText = $('#dropdownButton').text().toString();;
+          if (buttonText.indexOf("Click Here") == -1) {
+            alert(buttonText);
+            addMarker({
+              coords: event.latLng
+            });
+          } else {
+            if (confirm("Tour not Selected!")) {
+              window.location.reload();
+            }
+          }
+        })
+      });
+
+
+    } else {
+
+      alert("Map Doesn't Exist!");
+      window.location.href = 'Superuser-MapEdit.html';
+    }
+
+  }
+
+  function addExistingMarkers(props){
+    console.log("called function");
+    for (i=0;i<dbPoints.length;i++){
+      if (props.markerPosition == dbPoints[i].markerPosition){
+        props.markerPosition = dbPoints[i].markerPosition
+      }
+    }
+    image = tourTypes[props["tourType"]];
+    marker = new google.maps.Marker({
+      position: props.markerPosition,
+      map: map,
+      icon: image
+    });
+    console.log(props.markerPosition);
+    console.log(marker);
+    console.log("added marker");
+    gmarkers.push(marker);
+    console.log("_________________________________________");
+
+    marker.addListener('click', function() {
+
+      var contentString = '<div id="content">'+
+          '<div id="siteNotice">'+
+          '</div>'+
+          '<h1 id="firstHeading" class="firstHeading">'+ props["name"] +'</h1>'+
+          '<div id="bodyContent">'+
+            props["description"] +
+          '</div>'+
+          '</div>';
+          
+      var infoWindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+
+      infoWindow.setPosition(props["markerPositon"]);
+      infoWindow.open(map);
+      document.getElementById("collapseButton").click(); // Click on the checkbox
+
+      google.maps.event.addListener(infoWindow,'closeclick',function(){
+        document.getElementById("collapseButton").click(); // Click on the checkbox
+      });
+      
+      curMarker = props;
+      $(function() {
+        console.log("PROPS");
+        console.log(props);
+        $('#name').val(props["name"]);
+        $('#description').val(props["description"]);
+        // $('#audInput').val(props["audInput"]);
+        $('#delBut').removeClass("disabled");
+        $('#editBut').removeClass("disabled");
+      });
+    });
+  }
+  
+  $("#delBut").click(function() {
+    console.log(curMarker);
+    mapObject = JSON.parse(localStorage["mapPointsInfo"]);
+    $.each(mapObject, function(key, value) {
+      var tempObject = mapObject[key];
+      if(JSON.stringify(tempObject["markerPositon"]) == JSON.stringify(curMarker["markerPositon"])){
+        console.log(JSON.stringify(tempObject["markerPositon"]));
+        console.log(JSON.stringify(curMarker["markerPositon"]));
+        console.log("Exists!");
+        delete mapObject[key]; 
+        mapObject = mapObject.filter(Boolean);
+        console.log(mapObject);
+        localStorage.setItem('mapPointsInfo', JSON.stringify(mapObject));
+        if (confirm("DELETED!")) {
+          window.location.reload();
+        }
+        return false;
+      }
+      else{
+        console.log(JSON.stringify(tempObject["markerPositon"]));
+        console.log(JSON.stringify(curMarker["markerPositon"]));
+        console.log("------End------");
+      }
+    });
+    
+  }); 
+  
+  $("#editBut").click(function() {
+    function round(value, decimals) {
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+      }
+    console.log(curMarker);
+    mapObject = JSON.parse(localStorage["mapPointsInfo"]);
+    $.each(mapObject, function(key, value) {
+      var tempObject = mapObject[key];
+
+      var templat = round(tempObject["markerPositon"].lat, 10);
+      var templng = round(tempObject["markerPositon"].lng, 10);
+      tempObject["markerPositon"].lat = templat;
+      tempObject["markerPositon"].lng = templng;
+
+      var curlat = round(curMarker["markerPosition"].lat, 10);
+      var curlng = round(curMarker["markerPosition"].lng, 10);
+      curMarker["markerPosition"].lat = curlat;
+      curMarker["markerPosition"].lng = curlng;
+
+      if(JSON.stringify(tempObject["markerPositon"]) == JSON.stringify(curMarker["markerPosition"])){
+        console.log(JSON.stringify(tempObject["markerPositon"]));
+        console.log(JSON.stringify(curMarker["markerPositon"]));
+        console.log("Exists!");
+        delete mapObject[key]; 
+        mapObject = mapObject.filter(Boolean);
+        console.log(mapObject);
+        localStorage.setItem('mapPointsInfo', JSON.stringify(mapObject));
+        var mapPointsInfo = [{
+          "name": $('#name').val(),
+          "description": $("#description").val(),
+          "audInput": $("#audInput").val(),
+          "tourType": $('#dropdownButton').text().slice(0, -1),
+          "markerPositon": marker.getPosition()
+        }]
+
+        var newMarkerPointsInfo = JSON.parse(localStorage["mapPointsInfo"]);
+        console.log(newMarkerPointsInfo);
+        mapPointsInfo = mapPointsInfo[0];
+        newMarkerPointsInfo.push(mapPointsInfo);
+        console.log(newMarkerPointsInfo);
+        localStorage.setItem('mapPointsInfo', JSON.stringify(newMarkerPointsInfo));
+        if (confirm("Updated!")) {
+          window.location.reload();
+        }
+        return false;
+      }
+      else{
+        console.log(JSON.stringify(tempObject["markerPositon"]));
+        console.log(JSON.stringify(curMarker["markerPosition"]));
+        console.log("------End------");
+      }
+    });
+  });    
+    
+  function removeExistingMarkers(){
+    for(i=0; i<gmarkers.length; i++){
+        gmarkers[i].setMap(null);
+    }
+  }
+
+  function addMarker(props) {
+
+
+    image = tourTypes[image.slice(0, -1)];
+    marker = new google.maps.Marker({
+      position: props.coords,
+      map: map,
+      icon: image
+    });
+    document.getElementById("collapseButton").click(); // Click on the checkbox
+
+  }
+  
+
+  $(function() {
+    console.log(localStorage);
+
+    //replaces dropdown text dynamically
+    $(".dropdown-menu li a").click(function() {
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+      image = $('#dropdownButton').text();
+      newImage = image.slice(0, -1);
+      mapObject = dbPoints;
+      // mapObject = JSON.parse(localStorage["mapPointsInfo"]);
+      removeExistingMarkers();
+
+      $.each(mapObject, function(key, value) {
+        var tempObject = mapObject[key];
+          
+          console.log(tempObject);
+          if(tempObject["tourType"] == newImage){
+            console.log("Exists!");
+            addExistingMarkers(mapObject[key]);
+          }
+          else{
+            console.log("Not selected tour");
+            console.log(tempObject["tourType"] + " " + newImage)
+          }
+
+      });
+    });
+  });
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCROEB3riRr0oF3XNPfS-o3iL7MOEck90I&callback=initMap" async defer></script>
+{% endblock %}

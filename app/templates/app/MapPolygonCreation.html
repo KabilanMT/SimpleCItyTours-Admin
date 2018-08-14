@@ -118,6 +118,28 @@
                 console.log(xhr);
                 console.log(status);
                 console.log(error);
+                $.ajax({
+                    "type": "POST",
+                    "url": "/createCity/",
+                    "data": {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        name: city,
+                        description: description,
+                        lat: map.center.lat(),
+                        lng: map.center.lng(),
+                        price: 3,
+                        zoom: map.zoom,
+                        img: img
+                    },
+                    "success": function (result) {
+                        console.log(result);
+                    },
+                    "error": function (xhr, status, error) {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    },
+                  });
             },
         });
     }

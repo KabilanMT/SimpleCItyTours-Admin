@@ -8,20 +8,25 @@
 <h2>Edit City Points</h2>
 
 <div class="container">
-  <ul class="list-group">
-    <form>
+  <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" id="lat" name="lat" value=""/>
+    <input type="hidden" id="lng" name="lng" value=""/>
+    <input type="hidden" id="locationName" name="locationName" value="{{ city.name }}"/>
+    <input type="hidden" id="tourtype" name="tourtype" value=""/>
+    <ul class="list-group">
       <li class="list-group-item ">
         <div class="input-group">
           <span class="input-group-addon">Tour Type</span>
           <input id="adminUser" type="text" class="form-control pull-left" name="adminuser" disabled>
           <span class="input-group-btn">
-            <div class="dropdown pull-right" id="tourDropdown">
-              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownButton" >Click Here
-            <span class="caret"></span></button>
-          <ul class="dropdown-menu" id="tourDropdownList">
-          </ul>
-        </div>
-        </span>
+              <div class="dropdown pull-right" id="tourDropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownButton" >Click Here
+              <span class="caret"></span></button>
+            <ul class="dropdown-menu" id="tourDropdownList">
+            </ul>
+          </div>
+          </span>
 </div>
 <button data-toggle="collapse" data-target="#demo" class="invisible" id="collapseButton">Collapsible</button>
 
@@ -31,14 +36,14 @@
   <li class="list-group-item">
     <div class="input-group">
       <span class="input-group-addon">Name</span>
-      <input id="name" type="text" class="form-control" name="Name" placeholder="Point's Name">
+      <input id="name" type="text" class="form-control" name="name" placeholder="Point's Name">
     </div>
   </li>
 
   <li class="list-group-item">
     <div class="input-group">
       <span class="input-group-addon">Description</span>
-      <textarea id="description" type="text" class="form-control" name="Description" placeholder="Point's Description"></textarea>
+      <textarea id="description" type="text" class="form-control" name="description" placeholder="Point's Description"></textarea>
     </div>
   </li>
 
@@ -49,7 +54,7 @@
       <input type="text" class="form-control pull-left" disabled>
       <span class="input-group-btn">
 <label class="btn btn-default btn-file">
-    Browse: <input type="file" accept="audio/*"  id="audInput" style="display:none;"  required>
+    Browse: <input type="file" accept="audio/*"  id="audInput" name="file" style="display:none;"  required>
           <span id="audUploaded" style="visibility: hidden;">File Uploaded</span>
       </label>
       </span>
@@ -57,13 +62,13 @@
   </li>
   <div class="pull-right">
     <button type="button" class="btn btn-info disabled" id="editBut">Update Point</button>
-    <button type="button" class="btn btn-success" onclick="createPoint()">Create Point</button>
+    <button type="submit" class="btn btn-success" onclick="createPoint()">Create Point</button>
     <button type="button" class="btn btn-warning" onClick="window.location.reload()">Cancel</button>
     <button type="button" class="btn btn-danger disabled" id="delBut">DELETE</button>
   </div>
 </div>
-</form>
 </ul>
+</form>
 </div>
 
 
@@ -121,8 +126,16 @@
   //parse the value
   var finalvalue = JSON.parse(listvalues);
 
+  function MarkerLatPosition() {
+    return (marker.getPosition().lat());
+  }
+  function MarkerLngPosition() {
+    return (marker.getPosition().lng());
+  }
+
   //Create Point Function on Button Click
   function createPoint() {
+    console.log($('#dropdownButton').text().slice(0, -1));
     $(function() {
       $('#delBut').addClass("disabled");
       $('#editBut').addClass("disabled");
@@ -337,14 +350,29 @@
         console.log("------End------");
       }
     });
+    
   }); 
   
   $("#editBut").click(function() {
+    function round(value, decimals) {
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+      }
     console.log(curMarker);
     mapObject = JSON.parse(localStorage["mapPointsInfo"]);
     $.each(mapObject, function(key, value) {
       var tempObject = mapObject[key];
-      if(JSON.stringify(tempObject["markerPositon"]) == JSON.stringify(curMarker["markerPositon"])){
+
+      var templat = round(tempObject["markerPositon"].lat, 10);
+      var templng = round(tempObject["markerPositon"].lng, 10);
+      tempObject["markerPositon"].lat = templat;
+      tempObject["markerPositon"].lng = templng;
+
+      var curlat = round(curMarker["markerPosition"].lat, 10);
+      var curlng = round(curMarker["markerPosition"].lng, 10);
+      curMarker["markerPosition"].lat = curlat;
+      curMarker["markerPosition"].lng = curlng;
+
+      if(JSON.stringify(tempObject["markerPositon"]) == JSON.stringify(curMarker["markerPosition"])){
         console.log(JSON.stringify(tempObject["markerPositon"]));
         console.log(JSON.stringify(curMarker["markerPositon"]));
         console.log("Exists!");
@@ -373,7 +401,7 @@
       }
       else{
         console.log(JSON.stringify(tempObject["markerPositon"]));
-        console.log(JSON.stringify(curMarker["markerPositon"]));
+        console.log(JSON.stringify(curMarker["markerPosition"]));
         console.log("------End------");
       }
     });
@@ -396,6 +424,8 @@
     });
     document.getElementById("collapseButton").click(); // Click on the checkbox
 
+    document.getElementById("lat").value = MarkerLatPosition();
+    document.getElementById("lng").value = MarkerLngPosition();
   }
   
 
@@ -408,6 +438,7 @@
       $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       image = $('#dropdownButton').text();
       newImage = image.slice(0, -1);
+      document.getElementById("tourtype").value = newImage
       mapObject = dbPoints;
       // mapObject = JSON.parse(localStorage["mapPointsInfo"]);
       removeExistingMarkers();
