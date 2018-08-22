@@ -54,9 +54,9 @@ class Location(models.Model):
     lat = models.DecimalField(decimal_places=19, max_digits=23,null=True)
     lng = models.DecimalField(decimal_places=19, max_digits=23,null=True)
     price = models.DecimalField(decimal_places=2, max_digits=12,null=True)
-    # visibility = models.BooleanField(default=True)
+    visibility = models.BooleanField(default=True)
     description = models.CharField(max_length=1000,null=True)
-    polygon = models.OneToOneField(Polygon, models.PROTECT ,null=True)
+    polygon = models.OneToOneField(Polygon, models.CASCADE ,null=True)
     zoom = models.IntegerField(null=True)
     # img = models.CharField(max_length=255,default="/not_set")
     def __str__(self):

@@ -1,0 +1,12 @@
+{% for field in form %}
+    <li class="list-group-item">
+            <div>
+                <span class="text-danger small">{{field.errors}}</span>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">{{field.label_tag}}</span>
+                <div>{{field}}</div>
+            </div>
+    </li>
+
+{% endfor %}

@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
+<h2>Update City</h2>
 
 <div class="row">
      <form class="form-horizontal" action="" method="post">
          <ul class="list-group">
              {% csrf_token %}
-             {% include 'app/form-edit-template.html' %}
+             {% include 'app/city-form-template.html' %}
              <li class="list-group-item">
                     <div class="input-group">
                         <span class="input-group-addon">Map Bounds</span>
@@ -29,10 +29,17 @@
                     </div>
                 </li>
              <li>
-                 <button type="submit" class="btn btn-success pull-right">Save</button>
+                 <button type="submit" class="btn btn-success pull-right" style="margin-top: 20px">Save</button>
              </li>
          </ul>
      </form>
+     <form action="{% url 'cityDelete' view.get_pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="city_id" value="{{ view.get_pk }}" />
+        <div class="form-group">
+            <button type="submit" style="margin-right: 12px" class="btn btn-danger pull-right">Delete</button>
+        </div>
+    </form>
 </div>
 
 {% endblock %}

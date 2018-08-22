@@ -20,7 +20,6 @@
         {% else %}
             <li></li>
         {% endif %}
-        <li><a href="{% url 'home' %}">Payment Info</a></li>
     </ul>
     <form id="logoutForm" action="/logout" method="post" class="navbar-right">
         {% csrf_token %}
@@ -35,7 +34,6 @@
 
 <ul class="nav navbar-nav navbar">
         <li><a href="{% url 'payment' %}">payment</a></li>
-        <li><a href="{% url 'audio' %}">audio</a></li>
 </ul>
 <ul class="nav navbar-nav navbar-right">
     <li><a href="{% url 'login' %}">Login</a></li>

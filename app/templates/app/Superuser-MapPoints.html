@@ -8,44 +8,43 @@
 <h2>Edit City Points</h2>
 
 <div class="container">
-  <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" id="lat" name="lat" value=""/>
-    <input type="hidden" id="lng" name="lng" value=""/>
-    <input type="hidden" id="locationName" name="locationName" value="{{ city.name }}"/>
-    <input type="hidden" id="tourtype" name="tourtype" value=""/>
-    <ul class="list-group">
-      <li class="list-group-item ">
-        <div class="input-group">
-          <span class="input-group-addon">Tour Type</span>
-          <input id="adminUser" type="text" class="form-control pull-left" name="adminuser" disabled>
-          <span class="input-group-btn">
-              <div class="dropdown pull-right" id="tourDropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownButton" >Click Here
-              <span class="caret"></span></button>
-            <ul class="dropdown-menu" id="tourDropdownList">
-            </ul>
+  <form id="saveForm" class="form-horizontal" action="" method="post" enctype="multipart/form-data">{% csrf_token %}</form>
+  <input type="hidden" id="lat" name="lat" form="saveForm" value=""/>
+  <input type="hidden" id="lng" name="lng" form="saveForm" value=""/>
+  <input type="hidden" id="locationName" name="locationName" form="saveForm" value="{{ city.name }}"/>
+  <input type="hidden" id="tourtype" name="tourtype" form="saveForm" value=""/>
+  <ul class="list-group">
+    <li class="list-group-item ">
+      <div class="input-group">
+        <span class="input-group-addon">Tour Type</span>
+        <input id="adminUser" type="text" class="form-control pull-left" name="adminuser" disabled>
+        <span class="input-group-btn">
+          <div class="dropdown pull-right" id="tourDropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownButton">
+              Click Here
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" id="tourDropdownList"></ul>
           </div>
-          </span>
-</div>
-<button data-toggle="collapse" data-target="#demo" class="invisible" id="collapseButton">Collapsible</button>
+        </span>
+      </div>
+      <button data-toggle="collapse" data-target="#demo" class="invisible" id="collapseButton">Collapsible</button>
+    </li>
+    <div class="collapse collapse-class" id="demo">
 
-</li>
-<div class="collapse collapse-class" id="demo">
+    <li class="list-group-item">
+      <div class="input-group">
+        <span class="input-group-addon">Name</span>
+        <input id="name" type="text" class="form-control" name="name" form="saveForm" placeholder="Point's Name">
+      </div>
+    </li>
 
-  <li class="list-group-item">
-    <div class="input-group">
-      <span class="input-group-addon">Name</span>
-      <input id="name" type="text" class="form-control" name="name" placeholder="Point's Name">
-    </div>
-  </li>
-
-  <li class="list-group-item">
-    <div class="input-group">
-      <span class="input-group-addon">Description</span>
-      <textarea id="description" type="text" class="form-control" name="description" placeholder="Point's Description"></textarea>
-    </div>
-  </li>
+    <li class="list-group-item">
+      <div class="input-group">
+        <span class="input-group-addon">Description</span>
+        <textarea id="description" type="text" class="form-control" name="description" form="saveForm" placeholder="Point's Description"></textarea>
+      </div>
+    </li>
 
   <li class="list-group-item">
 
@@ -54,21 +53,20 @@
       <input type="text" class="form-control pull-left" disabled>
       <span class="input-group-btn">
 <label class="btn btn-default btn-file">
-    Browse: <input type="file" accept="audio/*"  id="audInput" name="file" style="display:none;"  required>
+    Browse: <input type="file" accept="audio/*"  id="audInput" name="file" form="saveForm" style="display:none;"  required>
           <span id="audUploaded" style="visibility: hidden;">File Uploaded</span>
       </label>
       </span>
     </div>
   </li>
   <div class="pull-right">
-    <button type="button" class="btn btn-info disabled" id="editBut">Update Point</button>
-    <button type="submit" class="btn btn-success" onclick="createPoint()">Create Point</button>
+    <button type="submit" class="btn btn-success" form="saveForm" onclick="createPoint()">Create Point</button>
     <button type="button" class="btn btn-warning" onClick="window.location.reload()">Cancel</button>
-    <button type="button" class="btn btn-danger disabled" id="delBut">DELETE</button>
+    <button type="button" class="btn btn-danger" id="delBut" onClick="deletePoint()">DELETE</button>
+    {{ point.pk }}
   </div>
 </div>
 </ul>
-</form>
 </div>
 
 
@@ -85,7 +83,8 @@
       name: '{{ point.name }}',
       description: '{{ point.description }}',
       markerPosition: { "lat": parseFloat('{{ point.lat }}'), "lng": parseFloat('{{ point.lng }}')},
-      tourType: '{{ point.pointtypes.name }}'
+      tourType: '{{ point.pointtypes.name }}',
+      pk: '{{ point.pk }}'
     };
     dbPoints.push(data);
   </script>
@@ -133,6 +132,25 @@
     return (marker.getPosition().lng());
   }
 
+  function deletePoint() {
+    $.ajax({
+            "type": "POST",
+            "url": "/deletePoint/",
+            "data": {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                name: document.getElementById("name").value
+            },
+            "success": function (result) {
+                console.log(result);
+            },
+            "error": function (xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            },
+        });
+        window.location.reload();
+  }
   //Create Point Function on Button Click
   function createPoint() {
     console.log($('#dropdownButton').text().slice(0, -1));
@@ -162,7 +180,7 @@
     })
 
     if (confirm("Saved!")) {
-      window.location.reload();
+      // window.location.reload();
     }
   }
   
@@ -297,7 +315,7 @@
           '</div>'+
           '<h1 id="firstHeading" class="firstHeading">'+ props["name"] +'</h1>'+
           '<div id="bodyContent">'+
-            props["description"] +
+            props["description"] + 
           '</div>'+
           '</div>';
           
@@ -322,6 +340,7 @@
         // $('#audInput').val(props["audInput"]);
         $('#delBut').removeClass("disabled");
         $('#editBut').removeClass("disabled");
+        changeAction(props["pk"]);
       });
     });
   }

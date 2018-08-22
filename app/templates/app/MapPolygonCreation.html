@@ -15,18 +15,27 @@
     <form>
         <div class="form-group">
             <label for="citynameInput">City's Name</label>
-            <input type="text" class="form-control" id="citynameInput" aria-describedby="emailHelp" placeholder="Enter City's Name">
+            <input type="text" class="form-control" id="citynameInput" aria-describedby="emailHelp" placeholder="Enter City's Name"/>
         </div>
         <div class="form-group">
             <label for="descriptionInput">Description</label>
-            <input type="text" class="form-control" id="descriptionInput" aria-describedby="emailHelp" placeholder="Enter Description">
+            <textarea class="form-control" id="descriptionInput" aria-describedby="emailHelp" placeholder="Enter Description"></textarea>
             <small class="form-text text-muted">Short Description of the City</small>
         </div>
         <div class="form-group">
+          <label for="adminInput">Admin User</label>
+          <select class="form-control" id="adminInput">
+            {% for user in users %}
+              <option value="{{ user.username }}">{{ user }}</option>
+            {% endfor %}
+          </select>
+          <small class="form-text text-muted">Admin of the City</small>
+      </div>
+        <!-- <div class="form-group">
             <label for="imgInput">Description</label>
             <input type="text" class="form-control" id="imgInput" aria-describedby="emailHelp" placeholder="Enter Image url">
             <small class="form-text text-muted">link to an Image</small>
-        </div>
+        </div> -->
         <div class="pull-right">
             <button type="button" class="btn btn-primary" onclick="createMap()">Create Map</button>
             <button type="button" class="btn btn-danger" onClick="window.location.reload()">Cancel</button>
@@ -49,7 +58,7 @@
     function createMap() {
       city = document.getElementById('citynameInput').value;
       description = document.getElementById('descriptionInput').value;
-      img = document.getElementById('imgInput').value;
+      admin = document.getElementById('adminInput').value;
       //Map Options
       var newOptions = {
         zoom: map.zoom,
@@ -102,7 +111,7 @@
                         lng: map.center.lng(),
                         price: 3,
                         zoom: map.zoom,
-                        img: img
+                        admin: admin
                     },
                     "success": function (result) {
                         console.log(result);
@@ -118,28 +127,6 @@
                 console.log(xhr);
                 console.log(status);
                 console.log(error);
-                $.ajax({
-                    "type": "POST",
-                    "url": "/createCity/",
-                    "data": {
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                        name: city,
-                        description: description,
-                        lat: map.center.lat(),
-                        lng: map.center.lng(),
-                        price: 3,
-                        zoom: map.zoom,
-                        img: img
-                    },
-                    "success": function (result) {
-                        console.log(result);
-                    },
-                    "error": function (xhr, status, error) {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
-                    },
-                  });
             },
         });
     }

@@ -10,9 +10,11 @@ from .models import Location, Polygon, Point, PointType, Audio
 from django.contrib.auth.models import User
 from django.views import generic
 from django.views.generic.edit import DeleteView, UpdateView, CreateView, View
-from .forms import UserForm, PasswordForm
+from .forms import UserForm, PasswordForm, CityForm
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse_lazy
+from django.forms.models import modelform_factory
+from django.forms import TextInput, Textarea, CheckboxInput, Select, NumberInput
 import json
 
 
@@ -31,11 +33,33 @@ class cityUpdate(UpdateView):
 class cityUpdateAdmin(UpdateView):
    """Renders the edit city page"""
    model = Location
-   fields = ['name', 'description', 'adminuser', 'price', 'visibility','id']
+   form_class = modelform_factory(Location,
+   widgets={
+       "name": TextInput({
+       'class': 'form-control','placeholder': 'city'
+       }), 
+       "description": Textarea({
+       'class': 'form-control','placeholder': 'description'
+       }),
+       "adminuser": Select({
+       'class': 'form-control',
+       }),
+       "price": NumberInput({
+       'class': 'form-control',
+       }),
+       "visibility": CheckboxInput({
+       'class': 'form-control'
+       }),},
+   fields=('name', 'description', 'adminuser', 'price', 'visibility','id'))
    template_name = 'app/mapEditForm.html'
    def get_pk(self):
         pk= self.kwargs['pk']
         return pk
+
+class cityDelete(DeleteView):
+    """Renders the user Creation page"""
+    model = Location
+    success_url = reverse_lazy('locations')
 
 class userCreation(View):
     """Renders the user Creation page"""
@@ -58,6 +82,15 @@ class userCreation(View):
     def get(self, request):
         form = self.form_class(None)
         return render(request, self.template_name, {'form': form})
+
+class cityedit(UpdateView):
+    """Renders the user Creation page"""
+    model = Location
+    form_class = modelform_factory(Location,
+    widgets={"name": TextInput()},
+    fields=('name',))
+    template_name = 'app/cityeditform.html'
+    # success_url = reverse_lazy('locations')
 
 class userUpdate(UpdateView):
     """Renders the user Creation page"""
@@ -194,6 +227,18 @@ def cityPointsUpdate(request, pk):
             point.description = request.POST.get('description')
             point.audioFile = request.FILES['file']
             point.save()
+        else:
+            point = Point.objects.get(name=request.POST['name'])
+            return HttpResponse(point)
+            pointtypes = PointType.objects.get(name=request.POST.get('tourtype', False))
+            point.location = Location.objects.get(pk=pk)
+            point.pointtypes = pointtypes
+            point.lat = request.POST.get('lat')
+            point.lng = request.POST.get('lng')
+            point.name = request.POST['name']
+            point.description = request.POST.get('description')
+            point.audioFile = request.FILES['file']
+            point.save()
 
     location = Location.objects.get(pk=pk)
     assert isinstance(request, HttpRequest)
@@ -262,6 +307,7 @@ def map(request):
         {
             'title':'Create a new city',
             'polygon': '',
+            'users': User.objects.all(),
             'message':'Your application description page.',
             'year':datetime.now().year,
         }
@@ -271,6 +317,11 @@ def createPolygon(request):
     """Posting to database"""
     if request.is_ajax():
         if request.method == "POST":
+            polyCount = Polygon.objects.filter(name=request.POST['name']).count()
+            if polyCount > 0:
+                oldPolygon = Polygon.objects.get(name=request.POST['name'])
+                oldPolygon.delete()
+
             polygon = Polygon.objects.create(
                 name=request.POST['name'],
                 points=request.POST['points'],
@@ -296,14 +347,19 @@ def createCity(request):
     if request.is_ajax():
         if request.method == "POST":
             polygon = Polygon.objects.get(name=request.POST['name'])
+            user = User.objects.get(username=request.POST['admin'])
+            # user = User.objects.get(username="admin")
+            # string = user.username + " " + polygon.name + " " + request.POST['description'] + " " + str(request.POST['lat']) + " " + str(request.POST['lng']) + " " + str(request.POST['zoom']) + " " + str(request.POST['price'])
+            # return HttpResponse(string)
             city = Location.objects.create(
-                name=request.POST['name'],
-                description=request.POST['description'],
-                lat=request.POST['lat'],
-                lng=request.POST['lng'],
-                price=request.POST['price'],
-                zoom=request.POST['zoom'],
-                adminuser=User.objects.get(username="admin"),
+                name=str(request.POST['name']),
+                description=str(request.POST['description']),
+                lat=float(request.POST['lat']),
+                lng=float(request.POST['lng']),
+                price=float(request.POST['price']),
+                zoom=int(request.POST['zoom']),
+                adminuser=user,
+                visibility=False,
                 # img=request.POST['img'],
                 polygon=polygon
                 )
@@ -329,7 +385,15 @@ def createPoint(request):
                 return redirect(home)
             else:
                 return redirect(home)
-            
+
+
+def deletePoint(request):
+    """Posting to database"""
+    if request.is_ajax():
+        if request.method == "POST":
+            instance = Point.objects.get(name=request.POST['name'])
+            instance.delete()
+            return redirect('locations')
 
 #def userCreation(request):
 #    """Renders the about page."""
