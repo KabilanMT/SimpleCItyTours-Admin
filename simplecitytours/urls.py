@@ -15,6 +15,20 @@ import app.views
 from django.conf.urls import include
 from django.contrib import admin
 admin.autodiscover()
+from rest_framework import routers
+from .views import UserViewSet, PolygonViewSet, LandingPageViewSet, LocationViewSet, PointTypeViewSet, PointViewSet, TouristViewSet, UserPaymentViewSet, AdminActiveTimeViewSet
+from rest_framework import routers, serializers, viewsets
+
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'polygon', PolygonViewSet)
+router.register(r'landingpage', LandingPageViewSet)
+router.register(r'location', LocationViewSet)
+router.register(r'pointtype', PointTypeViewSet)
+router.register(r'point', PointViewSet)
+router.register(r'tourist', TouristViewSet)
+router.register(r'userpayment', UserPaymentViewSet)
+router.register(r'adminactivetime', AdminActiveTimeViewSet)
 
 urlpatterns = [
     url(r'^$', app.views.home, name='home'),
@@ -61,6 +75,8 @@ urlpatterns = [
         name='logout'),
      url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
      url(r'^admin/', include(admin.site.urls)),
+     url(r'^app/', include('app.urls')),
+     url(r'^api/', include(router.urls)),
 ]
 
 if settings.DEBUG is True:
