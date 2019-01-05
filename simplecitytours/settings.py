@@ -27,7 +27,7 @@ SECRET_KEY = '27140f1b-c81d-49e1-aae5-9ec43c342a90'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.88.70.214','simplecitytours.com','www.simplecitytours.com','localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['52.36.191.194','simplecitytours.com','www.simplecitytours.com','localhost', '127.0.0.1']
 
 
 # Application definition

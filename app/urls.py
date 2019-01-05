@@ -21,7 +21,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify
 from simplecitytours import views
 
 urlpatterns = [
-    # url(r'login/', obtain_jwt_token),
+    url(r'login/', obtain_jwt_token),
     url(r'verify_token/', verify_jwt_token),
     url(r'logout/', refresh_jwt_token),
     # url(r'testapi/', views.test_resp, name='testresp'),
