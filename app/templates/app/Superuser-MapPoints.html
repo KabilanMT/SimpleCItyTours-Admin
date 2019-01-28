@@ -28,6 +28,7 @@
           </div>
         </span>
       </div>
+      <button type="button" class="btn btn-warning pull-right disabled" id="locBut" onclick="getCurrentLocation()">Current Location</button>
       <button data-toggle="collapse" data-target="#demo" class="invisible" id="collapseButton">Collapsible</button>
     </li>
     <div class="collapse collapse-class" id="demo">
@@ -61,8 +62,8 @@
   </li>
   <div class="pull-right">
     <button type="submit" class="btn btn-success" form="saveForm" onclick="createPoint()">Create Point</button>
-    <button type="button" class="btn btn-warning" onClick="window.location.reload()">Cancel</button>
-    <button type="button" class="btn btn-danger" id="delBut" onClick="deletePoint()">DELETE</button>
+    <button type="button" class="btn btn-warning" onclick="window.location.reload()">Cancel</button>
+    <button type="button" class="btn btn-danger" id="delBut" onclick="deletePoint()">DELETE</button>
     {{ point.pk }}
   </div>
 </div>
@@ -213,6 +214,21 @@
             },
         });
     }
+  }
+
+  function getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+
+  function showPosition(position) {
+    console.log("Latitude: " + position.coords.latitude);
+    console.log("Longitude: " + position.coords.longitude);
+
+    addMarker({coords: {lat: position.coords.latitude, lng: position.coords.longitude}});
   }
 
   //Initial Map
@@ -476,6 +492,7 @@
           }
 
       });
+      $('#locBut').removeClass("disabled");
     });
   });
 </script>

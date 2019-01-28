@@ -131,29 +131,31 @@ def get_points(request):
                 description         = points_in_location[j].description
                 radius              = points_in_location[j].radius
 
-                types = []
-                for k in range(len(points_in_location[j].pointtypes.all())):
-                    types.append(points_in_location[j].pointtypes.all()[k].name)
+                types = points_in_location[j].pointtypes.name
+                typeID = points_in_location[j].pointtypes.id
+                # for k in range(len(points_in_location[j].pointtypes.all())):
+                #     types.append(points_in_location[j].pointtypes.all()[k].name)
 
                  
-                img                 = points_in_location[j].img
-                imgPath             = BASE_DIR+img
-                # print(imgPath)
-                if os.path.exists(imgPath):
-                    with open(imgPath, "rb") as image_file:
-                        encoded_string = base64.b64encode(image_file.read())
-                else:
-                    with open(BASE_DIR+"/imgs/No_img.jpg", "rb") as image_file:
-                        encoded_string = base64.b64encode(image_file.read())
+                # img                 = points_in_location[j].img
+                # imgPath             = BASE_DIR+img
+                # # print(imgPath)
+                # if os.path.exists(imgPath):
+                #     with open(imgPath, "rb") as image_file:
+                #         encoded_string = base64.b64encode(image_file.read())
+                # else:
+                #     with open(BASE_DIR+"/imgs/No_img.jpg", "rb") as image_file:
+                #         encoded_string = base64.b64encode(image_file.read())
 
                 point['id']           = pointId
-                point['types']        = types
+                point['type']         = types
+                point['typeID']       = typeID
                 point['name']         = name
                 point['lat']          = lat
                 point['lng']          = lng
                 point['description']  = description
                 point['radius']       = radius
-                point['img']          = encoded_string
+                # point['img']          = encoded_string
                 formatted_points[all_locations[i].name].append(point)
     return Response(formatted_points)
 
