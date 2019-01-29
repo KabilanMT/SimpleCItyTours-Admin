@@ -133,6 +133,7 @@ def get_points(request):
 
                 types = points_in_location[j].pointtypes.name
                 typeID = points_in_location[j].pointtypes.id
+                
                 # for k in range(len(points_in_location[j].pointtypes.all())):
                 #     types.append(points_in_location[j].pointtypes.all()[k].name)
 

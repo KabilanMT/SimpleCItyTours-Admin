@@ -3,7 +3,7 @@ body {
 }
 
 .loginContainer {
-    background-color: #043927;
+    background-color: #043927 !important;
     margin-top: 20px;
     border-radius: 20px;
     padding-top:10px;
