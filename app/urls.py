@@ -16,14 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import include
 from django.conf.urls import url
-from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+# from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 # from .views import Tour_cities
 from simplecitytours import views
 
 urlpatterns = [
-    url(r'login/', obtain_jwt_token),
-    url(r'verify_token/', verify_jwt_token),
-    url(r'logout/', refresh_jwt_token),
+    # url(r'login/', obtain_jwt_token),
+    # url(r'verify_token/', verify_jwt_token),
+    # url(r'logout/', refresh_jwt_token),
     # url(r'testapi/', views.test_resp, name='testresp'),
     url(r'signup/', views.signup_user, name='signup'),
     url(r'getaudio/', views.get_audio, name='audio'),

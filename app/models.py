@@ -58,6 +58,7 @@ class Location(models.Model):
     description = models.CharField(max_length=1000,null=True)
     polygon = models.OneToOneField(Polygon, models.CASCADE ,null=True)
     zoom = models.IntegerField(null=True)
+    users = models.ManyToManyField(User, related_name='customers')
     # img = models.CharField(max_length=255,default="/not_set")
     def __str__(self):
         return self.name

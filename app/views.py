@@ -434,3 +434,10 @@ def audio(request):
             'files': Audio.objects.all()
         }
     )
+
+def purchase(request):
+    """Adding user to city list"""
+    if request.method == "POST":
+        location = Location.objects.get(name=request.POST['locationName'])
+        user = User.objects.get(username=request.POST['username'])
+        location.users.add(user)

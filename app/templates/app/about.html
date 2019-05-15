@@ -1,10 +1,36 @@
 {% extends "app/layout.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <h2>{{ title }}.</h2>
 <h3>{{ message }}</h3>
 
 <p>Use this area to provide additional information.</p>
 
+<button type="button" class="btn btn-primary" onclick="addUser()">test</button>
+
+<script>
+    function addUser(){
+        $.ajax({
+            "type": "POST",
+            "url": "/purchase/",
+            "data": {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                username: 'test',
+                locationName:'Seattle'
+            },
+            "success": function (result) {
+                console.log(result);
+            },
+            "error": function (xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            },
+        });
+    }
+</script>
 {% endblock %}

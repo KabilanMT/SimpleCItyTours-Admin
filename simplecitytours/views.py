@@ -17,7 +17,7 @@ import json
 from django.db import transaction
 from django.db.models import Q
 from django.core import serializers
-from rest_framework_jwt.settings import api_settings
+# from rest_framework_jwt.settings import api_settings
 
 from rest_framework.response import Response
 

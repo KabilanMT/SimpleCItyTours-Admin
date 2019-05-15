@@ -55,6 +55,7 @@ urlpatterns = [
     url(r'^payment/$', app.views.payment, name='payment'),
     url(r'^audio/$', app.views.audio, name='audio'),
     url(r'^about', app.views.about, name='about'),
+    url(r'^purchase/', app.views.purchase, name='purchase'),
     url(r'^login/$',
         django.contrib.auth.views.login,
         {
@@ -77,6 +78,8 @@ urlpatterns = [
      url(r'^admin/', include(admin.site.urls)),
      url(r'^app/', include('app.urls')),
      url(r'^api/', include(router.urls)),
+     url(r'^rest-auth/', include('rest_auth.urls')),
+     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
 ]
 
 if settings.DEBUG is True:
